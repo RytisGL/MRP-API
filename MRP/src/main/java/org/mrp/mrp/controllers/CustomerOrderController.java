@@ -1,43 +1,50 @@
 package org.mrp.mrp.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.mrp.mrp.entities.CustomerOrder;
+import org.mrp.mrp.dto.CustomerOrderBase;
 import org.mrp.mrp.services.CustomerOrderService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/admin")
+@RequestMapping(value = "/orders")
 @RestController
 @RequiredArgsConstructor
 public class CustomerOrderController {
     private final CustomerOrderService customerOrderService;
-    //JobService
-    //RequisitionService
-    //StockService
-    @GetMapping
-    public List<CustomerOrder> getAllCustomerOrders() {
-        return null;
-    }
-    @GetMapping (value = "/{customerOrderId}")
-    public CustomerOrder getCustomerOrderById(@PathVariable Long customerOrderId) {
-        return null;
-    }
-    @GetMapping(value = "/filter")
-    public List<CustomerOrder> filterCustomerOrders(@RequestBody CustomerOrder customerOrder) {
-        return null;
-    }
-    @PostMapping
-    public CustomerOrder createCustomerOrder(@RequestBody CustomerOrder customerOrder) {
-        return null;
-    }
-    @PatchMapping (value = "/{customerOrderId}")
-    public CustomerOrder updateCustomerOrder(@PathVariable Long customerOrderId, @RequestBody CustomerOrder customerOrder) {
-        return null;
-    }
-    @DeleteMapping (value = "/{customerOrderId}")
-    public void deleteCustomerOrder(@PathVariable Long customerOrderId) {
 
+    @GetMapping
+    public ResponseEntity<List<CustomerOrderBase>> getCustomerOrders() {
+        return ResponseEntity.ok(this.customerOrderService.getCustomerOrders());
+    }
+
+    @GetMapping(value = "/{customerOrderId}")
+    public ResponseEntity<CustomerOrderBase> getCustomerOrderById(@PathVariable Long customerOrderId) {
+        System.out.println(customerOrderId);
+        return ResponseEntity.ok(this.customerOrderService.getCustomerOrderById(customerOrderId));
+    }
+
+    @GetMapping(value = "/filters")
+    public ResponseEntity<List<CustomerOrderBase>> getFilteredCustomerOrders(@RequestBody CustomerOrderBase customerOrder) {
+        return ResponseEntity.ok(this.customerOrderService.getCustomerOrdersByCustomerFiltered(customerOrder));
+    }
+
+    @PostMapping
+    public ResponseEntity<CustomerOrderBase> createCustomerOrder(@RequestBody @Valid CustomerOrderBase customerOrder) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.customerOrderService.createCustomerOrder(customerOrder));
+    }
+
+    @PatchMapping(value = "/{customerOrderId}")
+    public ResponseEntity<CustomerOrderBase> updateCustomerOrder(@PathVariable Long customerOrderId, @RequestBody @Valid CustomerOrderBase customerOrder) {
+        return ResponseEntity.ok(this.customerOrderService.updateCustomerOrder(customerOrder, customerOrderId));
+    }
+
+    @DeleteMapping(value = "/{customerOrderId}")
+    public ResponseEntity<CustomerOrderBase> deleteCustomerOrder(@PathVariable Long customerOrderId) {
+        return ResponseEntity.ok(this.customerOrderService.deleteCustomerOrderById(customerOrderId));
     }
 }
