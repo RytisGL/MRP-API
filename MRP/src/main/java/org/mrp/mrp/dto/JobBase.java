@@ -1,22 +1,18 @@
 package org.mrp.mrp.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class JobBase {
-    @Size(min = 5, max = 50, message = "About Me must be between 5 and 50 characters")
-    @NotNull(message = "Name cannot be null")
-    @NotBlank
+    @NotBlank(message = "{validation.constraints.type.message} {validation.constraints.not_blank.message}")
+    @Size(min = 5, max = 50, message = "{validation.constraints.type.message} {validation.constraints.size.message}")
     private String type;
-    @Size(min = 5, max = 50, message = "About Me must be between 5 and 50 characters")
-    @NotNull(message = "Name cannot be null")
-    @NotBlank
+    @Size(min = 5, max = 50, message = "{validation.constraints.details.message} {validation.constraints.size.message}")
+    @NotBlank(message = "{validation.constraints.details.message} {validation.constraints.not_blank.message}")
     private String details;
-    @Size(min = 5, max = 100, message = "About Me must be between 5 and 50 characters")
-    @NotNull(message = "Name cannot be null")
-    @NotBlank
+    @NotBlank(message = "{validation.constraints.status.message} {validation.constraints.not_blank.message}")
+    @Size(min = 5, max = 50, message = "{validation.constraints.status.message} {validation.constraints.size.message}")
     private String status;
 }

@@ -2,6 +2,8 @@ package org.mrp.mrp.exceptions;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.mrp.mrp.enums.errormessages.ErrorMessageCategory;
+import org.mrp.mrp.enums.errormessages.ErrorMessage;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Locale;
 import java.util.NoSuchElementException;
 
 import static org.springframework.http.HttpStatus.*;
@@ -27,28 +30,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        BaseErrorResponse baseErrorResponse = new BaseErrorResponse();
-        baseErrorResponse.setMessage("Message not readable");
-        baseErrorResponse.setError("Wrong request format");
-        baseErrorResponse.setStatus(BAD_REQUEST.value());
+        BaseErrorResponse baseErrorResponse = getBaseErrorResponse(BAD_REQUEST, request.getLocale(), ErrorMessageCategory.HTTP_MESSAGE_NOT_READABLE);
         return new ResponseEntity<>(baseErrorResponse, BAD_REQUEST);
     }
 
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        BaseErrorResponse baseErrorResponse = new BaseErrorResponse();
-        baseErrorResponse.setMessage("Type mismatch");
-        baseErrorResponse.setError("Wrong argument type");
-        baseErrorResponse.setStatus(BAD_REQUEST.value());
+        BaseErrorResponse baseErrorResponse = getBaseErrorResponse(BAD_REQUEST, request.getLocale(), ErrorMessageCategory.TYPE_MISMATCH);
         return new ResponseEntity<>(baseErrorResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    protected ResponseEntity<Object> handleEntityNotFound() {
-        BaseErrorResponse errorResponse = new BaseErrorResponse();
-        errorResponse.setMessage("Requested data does not exist");
-        errorResponse.setError("Request not found");
-        errorResponse.setStatus(NOT_FOUND.value());
+    protected ResponseEntity<Object> handleEntityNotFound(WebRequest request) {
+        BaseErrorResponse errorResponse = getBaseErrorResponse(NOT_FOUND, request.getLocale(), ErrorMessageCategory.ENTITY_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, NOT_FOUND);
     }
 
@@ -61,31 +55,30 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<Object> handleSQLException(NoSuchElementException ex, WebRequest request) {
         log.debug("Exception: {}Request: {}Stack trace: {}", ex.getMessage(), request.getDescription(false), ex.toString());
-        BaseErrorResponse errorResponse = new BaseErrorResponse();
-        errorResponse.setMessage("Requested data does not exist");
-        errorResponse.setError("Request not found");
-        errorResponse.setStatus(NOT_FOUND.value());
+        BaseErrorResponse errorResponse = getBaseErrorResponse(NOT_FOUND, request.getLocale(), ErrorMessageCategory.ENTITY_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, NOT_FOUND);
     }
 
     @ExceptionHandler(NumberFormatException.class)
     protected ResponseEntity<Object> handleNumberFormatException(NumberFormatException ex, WebRequest request) {
         log.debug("Exception: {}Request: {}Stack trace: {}", ex.getMessage(), request.getDescription(false), ex.toString());
-        BaseErrorResponse errorResponse = new BaseErrorResponse();
-        errorResponse.setMessage("Ill redo error messages later ");
-        errorResponse.setError("For now i just need to know it catches number parse");
-        errorResponse.setStatus(BAD_REQUEST.value());
+        BaseErrorResponse errorResponse = getBaseErrorResponse(BAD_REQUEST, request.getLocale(), ErrorMessageCategory.ENTITY_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleUnspecifiedException(Exception ex, WebRequest request) {
         log.error("Exception: {}Request: {}Stack trace: {}", ex.getMessage(), request.getDescription(false), ex.toString());
-        BaseErrorResponse errorResponse = new BaseErrorResponse();
-        errorResponse.setMessage("Critical Error");
-        errorResponse.setError("Internal Server Error");
-        errorResponse.setStatus(INTERNAL_SERVER_ERROR.value());
+        BaseErrorResponse errorResponse = getBaseErrorResponse(INTERNAL_SERVER_ERROR, request.getLocale(), ErrorMessageCategory.ENTITY_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, INTERNAL_SERVER_ERROR);
     }
 
+    private BaseErrorResponse getBaseErrorResponse(HttpStatus status, Locale locale, ErrorMessageCategory errorMessageCategory) {
+        BaseErrorResponse baseErrorResponse = new BaseErrorResponse();
+        ErrorMessage errorMessage = ErrorMessage.getErrorMessage(locale, errorMessageCategory);
+        baseErrorResponse.setMessage(errorMessage.getMessage());
+        baseErrorResponse.setError(errorMessage.getError());
+        baseErrorResponse.setStatus(status.value());
+        return baseErrorResponse;
+    }
 }

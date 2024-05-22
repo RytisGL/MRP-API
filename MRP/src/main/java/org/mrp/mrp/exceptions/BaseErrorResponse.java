@@ -20,7 +20,7 @@ public class BaseErrorResponse {
         this.message = message;
         this.errors = new ArrayList<>();
         for (FieldError error : errors) {
-            this.errors.add(String.format("%s: %s", error.getField(), error.getDefaultMessage()));
+            this.errors.add(error.getDefaultMessage());
         }
         this.status = status;
     }
