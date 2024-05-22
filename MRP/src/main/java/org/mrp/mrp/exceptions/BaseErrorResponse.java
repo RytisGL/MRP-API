@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.validation.FieldError;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class BaseErrorResponse {
         }
         this.status = status;
     }
+
     public void setError(String error) {
         this.errors = new ArrayList<>();
         this.errors.add(error);

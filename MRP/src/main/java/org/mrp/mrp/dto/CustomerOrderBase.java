@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CustomerOrderDTO {
+public class CustomerOrderBase {
     @NotNull(message = "Name cannot be null")
     @Size(min = 5, max = 50, message = "About Me must be between 5 and 50 characters")
     @NotBlank
