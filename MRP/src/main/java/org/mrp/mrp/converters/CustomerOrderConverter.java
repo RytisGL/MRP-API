@@ -20,7 +20,7 @@ public abstract class CustomerOrderConverter {
         return customerOrder;
     }
 
-    public static CustomerOrderBase convertCustomerOrderToDTO(CustomerOrder customerOrder, TypeDTO type) {
+    public static CustomerOrderBase customerOrderToDTO(CustomerOrder customerOrder, TypeDTO type) {
         CustomerOrderBase dto;
 
         if (type == TypeDTO.BASE) {
@@ -42,12 +42,12 @@ public abstract class CustomerOrderConverter {
     public static List<CustomerOrderBase> customerOrdersToCustomerOrderDTOs(List<CustomerOrder> customerOrders, TypeDTO type) {
         List<CustomerOrderBase> dtos = new ArrayList<>();
         for (CustomerOrder customerOrder : customerOrders) {
-            dtos.add(convertCustomerOrderToDTO(customerOrder, type));
+            dtos.add(customerOrderToDTO(customerOrder, type));
         }
         return dtos;
     }
 
-    public static void updateCustomerOrderDTOToCustomer(CustomerOrderBase dto, CustomerOrder customerOrder) {
+    public static void updateCustomerOrderDTOToCustomerOrder(CustomerOrderBase dto, CustomerOrder customerOrder) {
             customerOrder.setName(dto.getName());
             customerOrder.setStatus(dto.getStatus());
             customerOrder.setDetails(dto.getDetails());

@@ -17,11 +17,11 @@ public class CustomerOrderService {
     private final CustomerOrderRepository customerOrderRepository;
 
     public CustomerOrderBase getCustomerOrderById(Long customerOrderId) {
-        return CustomerOrderConverter.convertCustomerOrderToDTO(this.customerOrderRepository.findById(customerOrderId).orElseThrow(), TypeDTO.FETCH);
+        return CustomerOrderConverter.customerOrderToDTO(this.customerOrderRepository.findById(customerOrderId).orElseThrow(), TypeDTO.FETCH);
     }
 
     public CustomerOrderBase createCustomerOrder(CustomerOrderBase customerOrderBase) {
-        return CustomerOrderConverter.convertCustomerOrderToDTO(customerOrderRepository.saveAndFlush(CustomerOrderConverter.customerOrderDTOToCustomerOrder(customerOrderBase)), TypeDTO.FETCH);
+        return CustomerOrderConverter.customerOrderToDTO(this.customerOrderRepository.saveAndFlush(CustomerOrderConverter.customerOrderDTOToCustomerOrder(customerOrderBase)), TypeDTO.FETCH);
     }
 
     public List<CustomerOrderBase> getCustomerOrders() {
@@ -31,21 +31,18 @@ public class CustomerOrderService {
     public CustomerOrderBase deleteCustomerOrderById(Long customerOrderId) {
         CustomerOrder customerOrder = this.customerOrderRepository.findById(customerOrderId).orElseThrow();
         this.customerOrderRepository.delete(customerOrder);
-        return CustomerOrderConverter.convertCustomerOrderToDTO(customerOrder, TypeDTO.FETCH);
+        return CustomerOrderConverter.customerOrderToDTO(customerOrder, TypeDTO.FETCH);
     }
 
     public CustomerOrderBase updateCustomerOrder(CustomerOrderBase customerOrderBase, Long customerOrderId) {
         CustomerOrder customerOrder = this.customerOrderRepository.findById(customerOrderId).orElseThrow();
-        CustomerOrderConverter.updateCustomerOrderDTOToCustomer(customerOrderBase, customerOrder);
+        CustomerOrderConverter.updateCustomerOrderDTOToCustomerOrder(customerOrderBase, customerOrder);
         this.customerOrderRepository.saveAndFlush(customerOrder);
-        return CustomerOrderConverter.convertCustomerOrderToDTO(customerOrder, TypeDTO.FETCH);
+        return CustomerOrderConverter.customerOrderToDTO(customerOrder, TypeDTO.FETCH);
     }
 
     public List<CustomerOrderBase> getCustomerOrdersByCustomerFiltered(CustomerOrderBase filterCustomerOrderBase) {
-        CustomerOrder customerOrder = new CustomerOrder();
-        customerOrder.setName(filterCustomerOrderBase.getName());
-        customerOrder.setDetails(filterCustomerOrderBase.getDetails());
-        customerOrder.setStatus(filterCustomerOrderBase.getStatus());
+        CustomerOrder customerOrder = CustomerOrderConverter.customerOrderDTOToCustomerOrder(filterCustomerOrderBase);
         return CustomerOrderConverter.customerOrdersToCustomerOrderDTOs(this.customerOrderRepository.findAll(Example.of(customerOrder)), TypeDTO.FETCH);
     }
 }
