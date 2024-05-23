@@ -24,7 +24,6 @@ public class CustomerOrderController {
 
     @GetMapping(value = "/{customerOrderId}")
     public ResponseEntity<CustomerOrderBase> getCustomerOrderById(@PathVariable Long customerOrderId) {
-        System.out.println(customerOrderId);
         return ResponseEntity.ok(this.customerOrderService.getCustomerOrderById(customerOrderId));
     }
 

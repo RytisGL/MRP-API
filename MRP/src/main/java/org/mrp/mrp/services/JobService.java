@@ -51,10 +51,7 @@ public class JobService {
     }
 
     public List<JobBase> getJobFiltered(JobBase jobDTO) {
-        Job job = new Job();
-        job.setType(jobDTO.getType());
-        job.setDetails(jobDTO.getDetails());
-        job.setStatus(jobDTO.getStatus());
+        Job job = JobConverter.jobDTOToJob(jobDTO);
         return JobConverter.jobsToJobDTOs(this.jobRepository.findAll(Example.of(job)), TypeDTO.FETCH);
     }
 

@@ -17,7 +17,7 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Double quantity;
+    private Float quantity;
     private String unitOfMeasurement;
     @OneToMany(mappedBy = "stock")
     private List<RequisitionItem> requisitionItemList;
@@ -27,4 +27,5 @@ public class Stock {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 }
