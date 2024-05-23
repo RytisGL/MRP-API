@@ -16,7 +16,7 @@ public class PurchaseOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Double quantity;
+    private Float quantity;
     private Date deliveryDate;
     private String status;
     @ManyToOne
