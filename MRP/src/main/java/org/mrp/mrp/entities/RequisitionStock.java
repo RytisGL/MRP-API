@@ -6,17 +6,17 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-public class RequisitionItem {
+public class RequisitionStock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Timestamp timestamp;
+    private Float quantity;
+    private String details;
     @ManyToOne
     private Requisition requisition;
     @ManyToOne

@@ -20,7 +20,7 @@ public class Stock {
     private Float quantity;
     private String unitOfMeasurement;
     @OneToMany(mappedBy = "stock")
-    private List<RequisitionItem> requisitionItemList;
+    private List<RequisitionStock> requisitionStockList;
     @OneToMany(mappedBy = "stock")
     private List<PurchaseOrder> purchaseOrders;
     @CreationTimestamp

@@ -16,12 +16,12 @@ public class Requisition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Double quantity;
+    private Float quantity;
     private String status;
     @ManyToOne
     private Job job;
     @OneToMany (mappedBy = "requisition")
-    private List<RequisitionItem> requisitionItemList;
+    private List<RequisitionStock> requisitionStockList;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
