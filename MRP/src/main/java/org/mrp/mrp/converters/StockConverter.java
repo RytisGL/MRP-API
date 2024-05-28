@@ -1,7 +1,7 @@
 package org.mrp.mrp.converters;
 
-import org.mrp.mrp.dto.StockBase;
-import org.mrp.mrp.dto.StockFetch;
+import org.mrp.mrp.dto.stock.StockBase;
+import org.mrp.mrp.dto.stock.StockFetch;
 import org.mrp.mrp.entities.Stock;
 import org.mrp.mrp.enums.TypeDTO;
 
@@ -28,7 +28,7 @@ public abstract class StockConverter {
             dto = new StockFetch();
             ((StockFetch) dto).setId(stock.getId());
         } else {
-            throw new IllegalArgumentException("Invalid CustomerOrderType");
+            throw new IllegalArgumentException("Invalid StockType");
         }
 
         dto.setName(stock.getName());

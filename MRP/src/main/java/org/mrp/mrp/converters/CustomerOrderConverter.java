@@ -1,7 +1,7 @@
 package org.mrp.mrp.converters;
 
-import org.mrp.mrp.dto.CustomerOrderBase;
-import org.mrp.mrp.dto.CustomerOrderFetch;
+import org.mrp.mrp.dto.customerorder.CustomerOrderBase;
+import org.mrp.mrp.dto.customerorder.CustomerOrderFetch;
 import org.mrp.mrp.entities.CustomerOrder;
 import org.mrp.mrp.enums.TypeDTO;
 
@@ -48,9 +48,9 @@ public abstract class CustomerOrderConverter {
     }
 
     public static void updateCustomerOrderDTOToCustomerOrder(CustomerOrderBase dto, CustomerOrder customerOrder) {
-            customerOrder.setName(dto.getName());
-            customerOrder.setStatus(dto.getStatus());
-            customerOrder.setDetails(dto.getDetails());
+        customerOrder.setName(dto.getName());
+        customerOrder.setStatus(dto.getStatus());
+        customerOrder.setDetails(dto.getDetails());
     }
 
 }

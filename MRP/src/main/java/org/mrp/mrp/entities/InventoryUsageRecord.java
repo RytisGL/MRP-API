@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class RequisitionStock {
+public class InventoryUsageRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Float quantity;
-    private String details;
+    private String status;
     @ManyToOne
     private Requisition requisition;
     @ManyToOne

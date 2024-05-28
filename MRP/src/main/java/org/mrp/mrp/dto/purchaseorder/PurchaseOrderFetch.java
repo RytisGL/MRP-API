@@ -1,10 +1,10 @@
-package org.mrp.mrp.dto;
+package org.mrp.mrp.dto.purchaseorder;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class RequisitionFetch extends RequisitionBase {
+public class PurchaseOrderFetch extends PurchaseOrderBase {
     private Long id;
 }

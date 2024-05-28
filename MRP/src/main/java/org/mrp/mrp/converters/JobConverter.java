@@ -1,7 +1,9 @@
 package org.mrp.mrp.converters;
 
-import org.mrp.mrp.dto.JobBase;
-import org.mrp.mrp.dto.JobFetch;
+import org.mrp.mrp.dto.job.JobBase;
+import org.mrp.mrp.dto.job.JobFetch;
+import org.mrp.mrp.dto.job.JobFetchBlocked;
+import org.mrp.mrp.dto.requisition.RequisitionBase;
 import org.mrp.mrp.entities.Job;
 import org.mrp.mrp.enums.TypeDTO;
 
@@ -34,6 +36,17 @@ public abstract class JobConverter {
         dto.setStatus(job.getStatus());
         dto.setDetails(job.getDetails());
         return dto;
+    }
+
+    public static JobFetchBlocked jobToJobBlockedDTO(Job job, List<JobBase> jobBlockers, List<RequisitionBase> requisitionBlockers) {
+        JobFetchBlocked jobFetchBlocked = new JobFetchBlocked();
+        jobFetchBlocked.setId(job.getId());
+        jobFetchBlocked.setType(job.getType());
+        jobFetchBlocked.setStatus(job.getStatus());
+        jobFetchBlocked.setDetails(job.getDetails());
+        jobFetchBlocked.setBlockedByJobs(jobBlockers);
+        jobFetchBlocked.setBlockedByRequisitions(requisitionBlockers);
+        return jobFetchBlocked;
     }
 
     public static List<JobBase> jobsToJobDTOs(List<Job> jobs, TypeDTO type) {

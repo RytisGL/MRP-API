@@ -2,7 +2,7 @@ package org.mrp.mrp.services;
 
 import lombok.RequiredArgsConstructor;
 import org.mrp.mrp.converters.CustomerOrderConverter;
-import org.mrp.mrp.dto.CustomerOrderBase;
+import org.mrp.mrp.dto.customerorder.CustomerOrderBase;
 import org.mrp.mrp.entities.CustomerOrder;
 import org.mrp.mrp.enums.TypeDTO;
 import org.mrp.mrp.repositories.CustomerOrderRepository;

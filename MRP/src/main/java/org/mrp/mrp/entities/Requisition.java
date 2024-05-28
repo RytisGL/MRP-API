@@ -20,8 +20,10 @@ public class Requisition {
     private String status;
     @ManyToOne
     private Job job;
-    @OneToMany (mappedBy = "requisition")
-    private List<RequisitionStock> requisitionStockList;
+    @ManyToOne
+    private Stock stock;
+    @OneToMany (mappedBy = "requisition", cascade = CascadeType.ALL)
+    private List<InventoryUsageRecord> inventoryUsageRecordList;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
