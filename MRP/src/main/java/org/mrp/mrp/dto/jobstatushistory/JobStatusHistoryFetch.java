@@ -1,4 +1,4 @@
-package org.mrp.mrp.dto;
+package org.mrp.mrp.dto.jobstatushistory;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

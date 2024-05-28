@@ -1,7 +1,7 @@
 package org.mrp.mrp.converters;
 
-import org.mrp.mrp.dto.JobStatusHistoryBase;
-import org.mrp.mrp.dto.JobStatusHistoryFetch;
+import org.mrp.mrp.dto.jobstatushistory.JobStatusHistoryBase;
+import org.mrp.mrp.dto.jobstatushistory.JobStatusHistoryFetch;
 import org.mrp.mrp.entities.JobStatusHistory;
 import org.mrp.mrp.enums.TypeDTO;
 
@@ -21,7 +21,7 @@ public abstract class JobStatusHistoryConverter {
             ((JobStatusHistoryFetch) dto).setId(jobHistory.getId());
             ((JobStatusHistoryFetch) dto).setCreatedAt(jobHistory.getCreatedAt());
         } else {
-            throw new IllegalArgumentException("Invalid JobHistoryStatus");
+            throw new IllegalArgumentException("Invalid JobStatusHistoryType");
         }
         dto.setStatus(jobHistory.getStatus());
         dto.setDetails(jobHistory.getDetails());

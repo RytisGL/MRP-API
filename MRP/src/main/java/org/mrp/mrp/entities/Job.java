@@ -23,7 +23,7 @@ public class Job {
     private List<JobStatusHistory> jobStatusHistory;
     @ManyToOne
     CustomerOrder customerOrder;
-    @OneToMany (mappedBy = "job")
+    @OneToMany (mappedBy = "job", cascade = CascadeType.ALL)
     private List<Requisition> requisitions;
     @OneToMany
     private List<Job> jobBlockers;

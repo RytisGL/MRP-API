@@ -2,5 +2,6 @@ package org.mrp.mrp.enums;
 
 public enum TypeDTO {
     BASE,
-    FETCH
+    FETCH,
+    FETCH_BLOCKED
 }

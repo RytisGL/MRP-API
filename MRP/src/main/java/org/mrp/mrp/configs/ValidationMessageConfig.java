@@ -10,7 +10,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
 import java.util.Locale;
 
-public class ValidationMessagesConfig implements WebMvcConfigurer {
+public class ValidationMessageConfig implements WebMvcConfigurer {
 
     @Bean
     public LocaleResolver localeResolver() {
