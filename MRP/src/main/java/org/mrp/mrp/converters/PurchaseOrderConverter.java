@@ -47,9 +47,4 @@ public class PurchaseOrderConverter {
         return dtos;
     }
 
-    public static void updateCustomerOrderDTOToCustomerOrder(PurchaseOrderBase dto, PurchaseOrder purchaseOrder) {
-        purchaseOrder.setQuantity(dto.getQuantity());
-        purchaseOrder.setStatus(dto.getStatus());
-        purchaseOrder.setDeliveryDate(dto.getDeliveryDate());
-    }
 }

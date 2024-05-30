@@ -21,6 +21,8 @@ public class InventoryUsageRecord {
     private Requisition requisition;
     @ManyToOne
     private Stock stock;
+    @ManyToOne @JoinColumn(referencedColumnName="email")
+    private User user;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

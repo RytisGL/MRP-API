@@ -2,6 +2,7 @@ package org.mrp.mrp.converters;
 
 import org.mrp.mrp.dto.customerorder.CustomerOrderBase;
 import org.mrp.mrp.dto.customerorder.CustomerOrderFetch;
+import org.mrp.mrp.dto.customerorder.CustomerOrderFetchJobs;
 import org.mrp.mrp.entities.CustomerOrder;
 import org.mrp.mrp.enums.TypeDTO;
 
@@ -28,6 +29,10 @@ public abstract class CustomerOrderConverter {
         } else if (type == TypeDTO.FETCH) {
             dto = new CustomerOrderFetch();
             ((CustomerOrderFetch) dto).setId(customerOrder.getId());
+        } else if (type == TypeDTO.FETCH_JOBS) {
+            dto = new CustomerOrderFetchJobs();
+            ((CustomerOrderFetchJobs) dto).setId(customerOrder.getId());
+            ((CustomerOrderFetchJobs) dto).setJobs(JobConverter.jobsToJobDTOs(customerOrder.getJobs(), TypeDTO.FETCH));
         } else {
             throw new IllegalArgumentException("Invalid CustomerOrderType");
         }

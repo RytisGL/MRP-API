@@ -28,7 +28,10 @@ public abstract class JobStatusHistoryConverter {
         return dto;
     }
 
-    public static List<JobStatusHistoryBase> jobStatusHistoryToJobStatusHistoryDTOs(List<JobStatusHistory> jobStatusHistoryList, TypeDTO type) {
+    public static List<JobStatusHistoryBase> jobStatusHistoryToJobStatusHistoryDTOs(
+            List<JobStatusHistory> jobStatusHistoryList,
+            TypeDTO type)
+    {
         List<JobStatusHistoryBase> dtos = new ArrayList<>();
         for (JobStatusHistory jobStatusHistory : jobStatusHistoryList) {
             dtos.add(jobStatusHistoryToJobStatusHistoryDTO(jobStatusHistory, type));

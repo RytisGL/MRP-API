@@ -7,7 +7,7 @@ public abstract class Utils {
     private Utils() {
     }
 
-    public static List<Long> parseOptionalIdStringToLongList(String ids) {
+    public static List<Long> parseStringIdStringToLongList(String ids) {
         List<Long> parsedIds = new ArrayList<>();
         for (String id : ids.split(",")) {
                 parsedIds.add(Long.parseLong(id));

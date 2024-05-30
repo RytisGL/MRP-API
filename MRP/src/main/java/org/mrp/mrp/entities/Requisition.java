@@ -20,7 +20,7 @@ public class Requisition {
     private String status;
     @ManyToOne
     private Job job;
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.ALL)
     private Stock stock;
     @OneToMany (mappedBy = "requisition", cascade = CascadeType.ALL)
     private List<InventoryUsageRecord> inventoryUsageRecordList;

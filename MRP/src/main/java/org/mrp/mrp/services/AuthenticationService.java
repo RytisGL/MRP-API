@@ -1,11 +1,14 @@
 package org.mrp.mrp.services;
 
 import lombok.RequiredArgsConstructor;
+import org.mrp.mrp.converters.UserConverter;
 import org.mrp.mrp.dto.auth.AuthenticationRequest;
 import org.mrp.mrp.dto.auth.AuthenticationResponse;
 import org.mrp.mrp.dto.auth.RegistrationRequest;
+import org.mrp.mrp.dto.user.UserFetch;
 import org.mrp.mrp.entities.User;
 import org.mrp.mrp.enums.Role;
+import org.mrp.mrp.exceptions.EmailException;
 import org.mrp.mrp.repositories.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +27,9 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegistrationRequest request) {
+        if (this.userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new EmailException("Email exist");
+        }
         User user = User.builder()
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
@@ -37,13 +43,14 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        this.authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         User user = this.userRepository.findByEmail(request.getEmail()).orElseThrow();
         String token = this.jwtService.generateToken(user);
         return new AuthenticationResponse(token);
     }
 
-    public void changeAuthority(Long userId, String role) {
+    public UserFetch changeAuthority(Long userId, String role) {
         Role roleEnum = null;
         for (Role r : Role.values()) {
             if (r.toString().equals(role)) {
@@ -56,9 +63,11 @@ public class AuthenticationService {
         User user = this.userRepository.findById(userId).orElseThrow();
         user.setRole(roleEnum);
         this.userRepository.saveAndFlush(user);
+        return UserConverter.userToUserDTO(user);
     }
 
-    public void deleteUser(Long userId) {
-        this.userRepository.deleteById(userId);
+    public UserFetch deleteUser(Long userId) {
+        User user = this.userRepository.findById(userId).orElseThrow();
+        return UserConverter.userToUserDTO(user);
     }
 }

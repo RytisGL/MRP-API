@@ -12,13 +12,6 @@ public class InventoryUsageRecordConverter {
     private InventoryUsageRecordConverter() {
     }
 
-    public static InventoryUsageRecord inventoryUsageRecordDTOToinventoryUsageRecord(InventoryUsageRecordBase dto) {
-        InventoryUsageRecord inventoryUsageRecord = new InventoryUsageRecord();
-        inventoryUsageRecord.setQuantity(dto.getQuantity());
-        inventoryUsageRecord.setStatus(dto.getStatus());
-        return inventoryUsageRecord;
-    }
-
     public static InventoryUsageRecordBase inventoryUsageRecordToDTO(InventoryUsageRecord inventoryUsageRecord, TypeDTO type) {
         InventoryUsageRecordBase dto;
 
@@ -27,6 +20,7 @@ public class InventoryUsageRecordConverter {
         } else if (type == TypeDTO.FETCH) {
             dto = new InventoryUsageRecordFetch();
             ((InventoryUsageRecordFetch) dto).setId(inventoryUsageRecord.getId());
+            ((InventoryUsageRecordFetch) dto).setUser(UserConverter.userToUserDTO(inventoryUsageRecord.getUser()));
         } else {
             throw new IllegalArgumentException("Invalid InventoryUsageRecordType");
         }
@@ -37,7 +31,10 @@ public class InventoryUsageRecordConverter {
         return dto;
     }
 
-    public static List<InventoryUsageRecordBase> inventoryUsageRecordToInventoryUsageRecordDTOs(List<InventoryUsageRecord> inventoryUsageRecords, TypeDTO type) {
+    public static List<InventoryUsageRecordBase> inventoryUsageRecordsToInventoryUsageRecordDTOs(
+            List<InventoryUsageRecord> inventoryUsageRecords,
+            TypeDTO type)
+    {
         List<InventoryUsageRecordBase> dtos = new ArrayList<>();
         for (InventoryUsageRecord inventoryUsageRecord : inventoryUsageRecords) {
             dtos.add(inventoryUsageRecordToDTO(inventoryUsageRecord, type));

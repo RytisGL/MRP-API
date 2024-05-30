@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mrp.mrp.dto.customerorder.CustomerOrderBase;
 import org.mrp.mrp.services.CustomerOrderService;
+import org.mrp.mrp.utils.Utils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,27 +26,9 @@ public class CustomerOrderController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
-    @GetMapping(value = "/jobs")
-    public ResponseEntity<List<CustomerOrderBase>> getCustomerOrdersJobs() {
-        return null;
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @GetMapping(value = "/{orderId}/jobs")
-    public ResponseEntity<List<CustomerOrderBase>> getCustomerOrderJobsByOrderId(@PathVariable Long orderId) {
-        return null;
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
-    @GetMapping(value = "/{orderId}/jobs/blocked")
-    public ResponseEntity<List<CustomerOrderBase>> getCustomerOrderBlockedJobsByOrderId(@PathVariable Long orderId) {
-        return null;
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
-    @GetMapping(value = "/{orderId}/jobs/available")
-    public ResponseEntity<List<CustomerOrderBase>> getCustomerOrderAvailableJobsByOrderId(@PathVariable Long orderId) {
-        return null;
+    public ResponseEntity<CustomerOrderBase> getCustomerOrderJobsByOrderId(@PathVariable Long orderId) {
+        return ResponseEntity.ok(this.customerOrderService.getCustomerOrderJobsById(orderId));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
@@ -67,8 +50,22 @@ public class CustomerOrderController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
+    @PatchMapping(value = "/{customerOrderId}/jobs")
+    public ResponseEntity<CustomerOrderBase> addJobsToCustomerOrder(
+            @PathVariable Long customerOrderId,
+            @RequestParam(value = "jobIds") String jobIds)
+    {
+        return ResponseEntity.ok(
+                this.customerOrderService.addJobsToCustomerOrder(
+                        Utils.parseStringIdStringToLongList(jobIds), customerOrderId));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @PatchMapping(value = "/{customerOrderId}")
-    public ResponseEntity<CustomerOrderBase> updateCustomerOrder(@PathVariable Long customerOrderId, @RequestBody @Valid CustomerOrderBase customerOrder) {
+    public ResponseEntity<CustomerOrderBase> updateCustomerOrder(
+            @PathVariable Long customerOrderId,
+            @RequestBody @Valid CustomerOrderBase customerOrder)
+    {
         return ResponseEntity.ok(this.customerOrderService.updateCustomerOrder(customerOrder, customerOrderId));
     }
 
