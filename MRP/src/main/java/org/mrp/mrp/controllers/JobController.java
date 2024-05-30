@@ -3,7 +3,6 @@ package org.mrp.mrp.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mrp.mrp.dto.job.JobBase;
-import org.mrp.mrp.dto.job.JobFetchBlocked;
 import org.mrp.mrp.dto.jobstatushistory.JobStatusHistoryBase;
 import org.mrp.mrp.dto.requisition.RequisitionBase;
 import org.mrp.mrp.services.JobService;
@@ -35,21 +34,13 @@ public class JobController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping(value = "/available")
-    public ResponseEntity<List<JobBase>> getAvailableJobs() {
-        return ResponseEntity.ok(this.jobService.getAvailableJobs());
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
     @GetMapping(value = "/filters")
-    public ResponseEntity<List<JobBase>> getJobsFiltered(@RequestBody JobBase job) {
-        return ResponseEntity.ok(this.jobService.getJobFiltered(job));
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping(value = "/blockers")
-    public ResponseEntity<List<JobFetchBlocked>> getJobsWithBlockers() {
-        return ResponseEntity.ok(this.jobService.getJobsWithBlockers());
+    public ResponseEntity<List<JobBase>> getJobsFiltered(
+            @RequestBody(required = false) JobBase job,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "orderId", required = false) Long orderId)
+    {
+        return ResponseEntity.ok(this.jobService.getJobFiltered(job, status, orderId));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
@@ -72,20 +63,32 @@ public class JobController {
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @PostMapping(value = "/{jobId}/requisitions/{stockId}")
-    public ResponseEntity<List<RequisitionBase>> createRequisition(@RequestBody @Valid RequisitionBase requisition, @PathVariable Long jobId, @PathVariable Long stockId) {
+    public ResponseEntity<List<RequisitionBase>> createRequisition(
+            @RequestBody @Valid RequisitionBase requisition,
+            @PathVariable Long jobId,
+            @PathVariable Long stockId)
+    {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.jobService.createRequisition(requisition, jobId, stockId));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @PatchMapping(value = "/{jobId}")
-    public ResponseEntity<JobBase> updateJob(@PathVariable Long jobId, @RequestBody @Valid JobBase job, @RequestParam(value = "details") String updateDetails) {
+    public ResponseEntity<JobBase> updateJob(
+            @PathVariable Long jobId,
+            @RequestBody @Valid JobBase job,
+            @RequestParam(value = "details") String updateDetails)
+    {
         return ResponseEntity.ok(this.jobService.updateJob(job, jobId, updateDetails));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @PostMapping(value = "/{jobId}/blockers")
-    public ResponseEntity<List<JobBase>> createJobBlockers(@PathVariable Long jobId, @RequestParam(value = "ids") String blockerJobIds) {
-        return ResponseEntity.ok(this.jobService.addJobBlockers(jobId, Utils.parseOptionalIdStringToLongList(blockerJobIds)));
+    public ResponseEntity<List<JobBase>> createJobBlockers(
+            @PathVariable Long jobId,
+            @RequestParam(value = "ids") String blockerJobIds)
+    {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                this.jobService.addJobBlockers(jobId, Utils.parseStringIdStringToLongList(blockerJobIds)));
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

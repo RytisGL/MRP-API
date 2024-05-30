@@ -38,7 +38,11 @@ public abstract class JobConverter {
         return dto;
     }
 
-    public static JobFetchBlocked jobToJobBlockedDTO(Job job, List<JobBase> jobBlockers, List<RequisitionBase> requisitionBlockers) {
+    public static JobFetchBlocked jobToJobBlockedDTO(
+            Job job,
+            List<JobBase> jobBlockers,
+            List<RequisitionBase> requisitionBlockers)
+    {
         JobFetchBlocked jobFetchBlocked = new JobFetchBlocked();
         jobFetchBlocked.setId(job.getId());
         jobFetchBlocked.setType(job.getType());

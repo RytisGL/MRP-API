@@ -5,7 +5,6 @@ import org.mrp.mrp.converters.JobConverter;
 import org.mrp.mrp.converters.JobStatusHistoryConverter;
 import org.mrp.mrp.converters.RequisitionConverter;
 import org.mrp.mrp.dto.job.JobBase;
-import org.mrp.mrp.dto.job.JobFetchBlocked;
 import org.mrp.mrp.dto.jobstatushistory.JobStatusHistoryBase;
 import org.mrp.mrp.dto.requisition.RequisitionBase;
 import org.mrp.mrp.entities.Job;
@@ -13,6 +12,7 @@ import org.mrp.mrp.entities.JobStatusHistory;
 import org.mrp.mrp.entities.Requisition;
 import org.mrp.mrp.entities.Stock;
 import org.mrp.mrp.enums.TypeDTO;
+import org.mrp.mrp.repositories.CustomerOrderRepository;
 import org.mrp.mrp.repositories.JobRepository;
 import org.mrp.mrp.repositories.StockRepository;
 import org.springframework.data.domain.Example;
@@ -26,6 +26,11 @@ import java.util.List;
 public class JobService {
     private final JobRepository jobRepository;
     private final StockRepository stockRepository;
+    private final CustomerOrderRepository customerOrderRepository;
+
+    private static final String COMPLETE = "Complete";
+    private static final String BLOCKED = "Blocked";
+    private static final String AVAILABLE = "Available";
 
     public JobBase getJobById(Long jobId) {
         return JobConverter.jobToDTO(this.jobRepository.findById(jobId).orElseThrow(), TypeDTO.FETCH);
@@ -53,7 +58,7 @@ public class JobService {
             addJobStatusHistory(job, jobDTO.getStatus(), updateDetails);
         }
         //If status changed to complete, blocker record cleared
-        if (jobDTO.getStatus().equals("Complete")) {
+        if (jobDTO.getStatus().equals(COMPLETE)) {
             job.setJobBlockers(null);
         }
         JobConverter.updateJobDTOToJob(jobDTO, job);
@@ -61,9 +66,36 @@ public class JobService {
         return JobConverter.jobToDTO(job, TypeDTO.FETCH);
     }
 
-    public List<JobBase> getJobFiltered(JobBase jobDTO) {
-        Job job = JobConverter.jobDTOToJob(jobDTO);
-        return JobConverter.jobsToJobDTOs(this.jobRepository.findAll(Example.of(job)), TypeDTO.FETCH);
+    public List<JobBase> getJobFiltered(JobBase jobDTO, String status, Long orderId) {
+        //Return all jobs if no filters
+        if (jobDTO == null && status == null && orderId == null) {
+            return this.getJobs();
+        }
+        //Create example job from dto or empty job to use as example
+        Job example;
+        if (jobDTO != null) {
+            example = JobConverter.jobDTOToJob(jobDTO);
+        } else {
+            example = new Job();
+        }
+        //Returns based on example without customer order
+        if (orderId == null && status == null) {
+            return JobConverter.jobsToJobDTOs(this.jobRepository.findAll(Example.of(example)), TypeDTO.FETCH);
+        }
+        //Adds customer order to example if not null
+        if (orderId != null) {
+            example.setCustomerOrder(this.customerOrderRepository.findById(orderId).orElseThrow());
+        }
+        //Returns blocked based on example
+        if (status != null && status.equalsIgnoreCase(BLOCKED)) {
+            return this.getJobsBlocked(this.jobRepository.findAll(Example.of(example)));
+        }
+        //Returns available based on example
+        if (status != null && status.equalsIgnoreCase(AVAILABLE)) {
+            return this.getAvailableJobs(this.jobRepository.findAll(Example.of(example)));
+        }
+        //Returns based on example with customer order
+        return JobConverter.jobsToJobDTOs(this.jobRepository.findAll(Example.of(example)), TypeDTO.FETCH);
     }
 
     public List<JobBase> addJobBlockers(Long jobId, List<Long> blockerJobIds) {
@@ -75,11 +107,13 @@ public class JobService {
     }
 
     public List<JobBase> getJobBlockersById(Long jobId) {
-        return JobConverter.jobsToJobDTOs(this.jobRepository.findById(jobId).orElseThrow().getJobBlockers(), TypeDTO.FETCH);
+        return JobConverter.jobsToJobDTOs(
+                this.jobRepository.findById(jobId).orElseThrow().getJobBlockers(), TypeDTO.FETCH);
     }
 
     public List<JobStatusHistoryBase> getJobStatusHistoryByJobId(Long jobId) {
-        return JobStatusHistoryConverter.jobStatusHistoryToJobStatusHistoryDTOs(this.jobRepository.findById(jobId).orElseThrow().getJobStatusHistory(), TypeDTO.FETCH);
+        return JobStatusHistoryConverter.jobStatusHistoryToJobStatusHistoryDTOs(
+                this.jobRepository.findById(jobId).orElseThrow().getJobStatusHistory(), TypeDTO.FETCH);
     }
 
     public List<RequisitionBase> createRequisition(RequisitionBase requisitionDTO, Long jobId, Long stockId) {
@@ -105,12 +139,11 @@ public class JobService {
         job.setJobStatusHistory(jobStatusHistoryList);
     }
 
-    public List<JobBase> getAvailableJobs() {
+    public List<JobBase> getAvailableJobs(List<Job> jobs) {
         List<JobBase> availableJobs = new ArrayList<>();
-        List<Job> jobs = this.jobRepository.findAll();
         for (Job job : jobs) {
             boolean jobAvailable;
-            if (job.getStatus().equals("Complete")) {
+            if (job.getStatus().equals(COMPLETE)) {
                 continue;
             }
             jobAvailable = isCompleteJob(job.getJobBlockers());
@@ -124,14 +157,13 @@ public class JobService {
         return availableJobs;
     }
 
-    public List<JobFetchBlocked> getJobsWithBlockers() {
-        List<Job> jobs = this.jobRepository.findAll();
-        List<JobFetchBlocked> jobFetchBlockedList = new ArrayList<>();
+    public List<JobBase> getJobsBlocked(List<Job> jobs) {
+        List<JobBase> jobFetchBlockedList = new ArrayList<>();
         for (Job job : jobs) {
             List<JobBase> jobBlockers = new ArrayList<>();
             List<RequisitionBase> requisitionList = new ArrayList<>();
             boolean jobAvailable = true;
-            if (job.getStatus().equals("Complete")) {
+            if (job.getStatus().equals(COMPLETE)) {
                 continue;
             }
             if (!isCompleteJob(job.getJobBlockers())) {
@@ -143,7 +175,7 @@ public class JobService {
                 jobAvailable = false;
             }
             if (!jobAvailable) {
-                JobFetchBlocked jobFetchBlocked = JobConverter.jobToJobBlockedDTO(job, jobBlockers, requisitionList);
+                JobBase jobFetchBlocked = JobConverter.jobToJobBlockedDTO(job, jobBlockers, requisitionList);
                 jobFetchBlockedList.add(jobFetchBlocked);
             }
         }
@@ -152,7 +184,7 @@ public class JobService {
 
     private boolean isCompleteRequisition(List<Requisition> requisitions) {
         for (Requisition requisition : requisitions) {
-            if (!requisition.getStatus().equals("Complete")) {
+            if (!requisition.getStatus().equals(COMPLETE)) {
                 return false;
             }
         }
@@ -161,7 +193,7 @@ public class JobService {
 
     private boolean isCompleteJob(List<Job> jobs) {
         for (Job jobBlocker : jobs) {
-            if (!jobBlocker.getStatus().equals("Complete")) {
+            if (!jobBlocker.getStatus().equals(COMPLETE)) {
                 return false;
             }
         }

@@ -46,9 +46,4 @@ public abstract class StockConverter {
         return dtos;
     }
 
-    public static void updateStockDTOToStock(StockBase dto, Stock stock) {
-        stock.setName(dto.getName());
-        stock.setQuantity(dto.getQuantity());
-        stock.setUnitOfMeasurement(dto.getUnitOfMeasurement());
-    }
 }

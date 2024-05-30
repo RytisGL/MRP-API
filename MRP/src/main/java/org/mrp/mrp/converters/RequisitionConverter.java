@@ -45,8 +45,4 @@ public class RequisitionConverter {
         return dtos;
     }
 
-    public static void updateRequisitionDTOToRequisition(RequisitionBase dto, Requisition requisition) {
-        requisition.setQuantity(dto.getQuantity());
-        requisition.setStatus(dto.getStatus());
-    }
 }
