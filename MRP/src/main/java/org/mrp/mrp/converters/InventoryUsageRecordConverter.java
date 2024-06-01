@@ -5,6 +5,7 @@ import org.mrp.mrp.dto.inventoryusagerecord.InventoryUsageRecordFetch;
 import org.mrp.mrp.entities.InventoryUsageRecord;
 import org.mrp.mrp.enums.TypeDTO;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class InventoryUsageRecordConverter {
             dto = new InventoryUsageRecordFetch();
             ((InventoryUsageRecordFetch) dto).setId(inventoryUsageRecord.getId());
             ((InventoryUsageRecordFetch) dto).setUser(UserConverter.userToUserDTO(inventoryUsageRecord.getUser()));
+            ((InventoryUsageRecordFetch) dto).setDateCreated(inventoryUsageRecord.getCreatedAt().truncatedTo(ChronoUnit.SECONDS));
         } else {
             throw new IllegalArgumentException("Invalid InventoryUsageRecordType");
         }

@@ -3,7 +3,7 @@ package org.mrp.mrp.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mrp.mrp.dto.job.JobBase;
-import org.mrp.mrp.dto.jobstatushistory.JobStatusHistoryBase;
+import org.mrp.mrp.dto.jobrecord.JobRecordBase;
 import org.mrp.mrp.dto.requisition.RequisitionBase;
 import org.mrp.mrp.services.JobService;
 import org.mrp.mrp.utils.Utils;
@@ -21,26 +21,21 @@ import java.util.List;
 public class JobController {
     private final JobService jobService;
 
+
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping
-    public ResponseEntity<List<JobBase>> getJobs() {
-        return ResponseEntity.ok(this.jobService.getJobs());
+    @GetMapping()
+    public ResponseEntity<List<JobBase>> getJobs(
+            @RequestBody(required = false) JobBase job,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "orderId", required = false) Long orderId)
+    {
+        return ResponseEntity.ok(this.jobService.getJobs(job, status, orderId));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
     @GetMapping(value = "/{jobId}")
     public ResponseEntity<JobBase> getJobById(@PathVariable Long jobId) {
         return ResponseEntity.ok(this.jobService.getJobById(jobId));
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping(value = "/filters")
-    public ResponseEntity<List<JobBase>> getJobsFiltered(
-            @RequestBody(required = false) JobBase job,
-            @RequestParam(value = "status", required = false) String status,
-            @RequestParam(value = "orderId", required = false) Long orderId)
-    {
-        return ResponseEntity.ok(this.jobService.getJobFiltered(job, status, orderId));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
@@ -51,7 +46,7 @@ public class JobController {
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
     @GetMapping(value = "/{jobId}/history")
-    public ResponseEntity<List<JobStatusHistoryBase>> getJobStatusHistory(@PathVariable Long jobId) {
+    public ResponseEntity<List<JobRecordBase>> getJobStatusHistory(@PathVariable Long jobId) {
         return ResponseEntity.ok(this.jobService.getJobStatusHistoryByJobId(jobId));
     }
 
@@ -71,7 +66,7 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.jobService.createRequisition(requisition, jobId, stockId));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
     @PatchMapping(value = "/{jobId}")
     public ResponseEntity<JobBase> updateJob(
             @PathVariable Long jobId,

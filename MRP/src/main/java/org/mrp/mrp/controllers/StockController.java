@@ -23,11 +23,10 @@ public class StockController {
     private final StockService stockService;
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping
-    public ResponseEntity<List<StockBase>> getStock() {
-        return ResponseEntity.ok(this.stockService.getStock());
+    @GetMapping()
+    public ResponseEntity<List<StockBase>> getFilteredStock(@RequestBody (required = false) StockBase stockBase) {
+        return ResponseEntity.ok(this.stockService.getStock(stockBase));
     }
-
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
     @GetMapping(value = "/{stockId}")
     public ResponseEntity<StockBase> getStockById(@PathVariable Long stockId) {
@@ -59,27 +58,17 @@ public class StockController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping(value = "/filters")
-    public ResponseEntity<List<StockBase>> getFilteredStock(@RequestBody StockBase stockBase) {
-        return ResponseEntity.ok(this.stockService.getStockFiltered(stockBase));
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping(value = "/porders")
-    public ResponseEntity<List<PurchaseOrderBase>> getPurchaseOrders() {
-        return ResponseEntity.ok(this.stockService.getPurchaseOrders());
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
     @GetMapping(value = "/{stockId}/porders")
     public ResponseEntity<List<PurchaseOrderBase>> getPurchaseOrdersByStockId(@PathVariable Long stockId) {
         return ResponseEntity.ok(this.stockService.getPurchaseOrdersByStockId(stockId));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping(value = "/porders/filters")
-    public ResponseEntity<List<PurchaseOrderBase>> getFilteredPurchaseOrders(@RequestBody PurchaseOrderBase purchaseOrderBase) {
-        return ResponseEntity.ok(this.stockService.getFilteredPurchaseOrders(purchaseOrderBase));
+    @GetMapping(value = "/porders")
+    public ResponseEntity<List<PurchaseOrderBase>> getFilteredPurchaseOrders(
+            @RequestBody (required = false) PurchaseOrderBase purchaseOrderBase)
+    {
+        return ResponseEntity.ok(this.stockService.getPurchaseOrders(purchaseOrderBase));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")

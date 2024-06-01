@@ -28,7 +28,6 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
-    //Record which user makes changes on records
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/authority/{userId}")

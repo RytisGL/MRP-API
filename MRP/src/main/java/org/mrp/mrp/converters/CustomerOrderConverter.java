@@ -6,6 +6,7 @@ import org.mrp.mrp.dto.customerorder.CustomerOrderFetchJobs;
 import org.mrp.mrp.entities.CustomerOrder;
 import org.mrp.mrp.enums.TypeDTO;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,9 @@ public abstract class CustomerOrderConverter {
 
     public static CustomerOrder customerOrderDTOToCustomerOrder(CustomerOrderBase dto) {
         CustomerOrder customerOrder = new CustomerOrder();
-        customerOrder.setName(dto.getName());
+        customerOrder.setCustomer(dto.getCustomer());
         customerOrder.setStatus(dto.getStatus());
-        customerOrder.setDetails(dto.getDetails());
+        customerOrder.setProduct(dto.getProduct());
         return customerOrder;
     }
 
@@ -28,23 +29,27 @@ public abstract class CustomerOrderConverter {
             dto = new CustomerOrderBase();
         } else if (type == TypeDTO.FETCH) {
             dto = new CustomerOrderFetch();
+            ((CustomerOrderFetch) dto).setOrderDate(customerOrder.getCreatedAt().toLocalDate());
             ((CustomerOrderFetch) dto).setId(customerOrder.getId());
         } else if (type == TypeDTO.FETCH_JOBS) {
             dto = new CustomerOrderFetchJobs();
             ((CustomerOrderFetchJobs) dto).setId(customerOrder.getId());
-            ((CustomerOrderFetchJobs) dto).setJobs(JobConverter.jobsToJobDTOs(customerOrder.getJobs(), TypeDTO.FETCH));
+            ((CustomerOrderFetchJobs) dto).setOrderDate(customerOrder.getCreatedAt().toLocalDate());
+            ((CustomerOrderFetchJobs) dto).setJobs(JobConverter.jobsToJobDTOs(customerOrder.getJobs(), type));
         } else {
             throw new IllegalArgumentException("Invalid CustomerOrderType");
         }
 
-        dto.setName(customerOrder.getName());
+        dto.setCustomer(customerOrder.getCustomer());
         dto.setStatus(customerOrder.getStatus());
-        dto.setDetails(customerOrder.getDetails());
+        dto.setProduct(customerOrder.getProduct());
 
         return dto;
     }
 
-    public static List<CustomerOrderBase> customerOrdersToCustomerOrderDTOs(List<CustomerOrder> customerOrders, TypeDTO type) {
+
+    public static List<CustomerOrderBase> customerOrdersToCustomerOrderDTOs(List<CustomerOrder> customerOrders,
+                                                                            TypeDTO type) {
         List<CustomerOrderBase> dtos = new ArrayList<>();
         for (CustomerOrder customerOrder : customerOrders) {
             dtos.add(customerOrderToDTO(customerOrder, type));
@@ -53,9 +58,9 @@ public abstract class CustomerOrderConverter {
     }
 
     public static void updateCustomerOrderDTOToCustomerOrder(CustomerOrderBase dto, CustomerOrder customerOrder) {
-        customerOrder.setName(dto.getName());
+        customerOrder.setCustomer(dto.getCustomer());
         customerOrder.setStatus(dto.getStatus());
-        customerOrder.setDetails(dto.getDetails());
+        customerOrder.setProduct(dto.getProduct());
     }
 
 }
