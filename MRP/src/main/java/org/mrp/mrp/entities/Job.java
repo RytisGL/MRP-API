@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,12 +19,12 @@ public class Job {
     private String details;
     private String status;
     @OneToMany (mappedBy = "job", cascade = CascadeType.ALL)
-    private List<JobStatusHistory> jobStatusHistory;
+    private List<JobRecord> jobRecord;
     @ManyToOne
     CustomerOrder customerOrder;
     @OneToMany (mappedBy = "job", cascade = CascadeType.ALL)
     private List<Requisition> requisitions;
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private List<Job> jobBlockers;
     @CreationTimestamp
     private LocalDateTime createdAt;

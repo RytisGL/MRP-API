@@ -7,6 +7,7 @@ import org.mrp.mrp.dto.requisition.RequisitionBase;
 import org.mrp.mrp.entities.Job;
 import org.mrp.mrp.enums.TypeDTO;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,9 @@ public abstract class JobConverter {
         } else if (type == TypeDTO.FETCH) {
             dto = new JobFetch();
             ((JobFetch) dto).setId(job.getId());
-        } else {
+            ((JobFetch) dto).setStartDate(job.getCreatedAt().toLocalDate());
+            ((JobFetch) dto).setUpdatedAt(job.getUpdatedAt().truncatedTo(ChronoUnit.SECONDS));
+        }  else {
             throw new IllegalArgumentException("Invalid JobType");
         }
         dto.setType(job.getType());
@@ -41,14 +44,15 @@ public abstract class JobConverter {
     public static JobFetchBlocked jobToJobBlockedDTO(
             Job job,
             List<JobBase> jobBlockers,
-            List<RequisitionBase> requisitionBlockers)
-    {
+            List<RequisitionBase> requisitionBlockers) {
         JobFetchBlocked jobFetchBlocked = new JobFetchBlocked();
         jobFetchBlocked.setId(job.getId());
         jobFetchBlocked.setType(job.getType());
         jobFetchBlocked.setStatus(job.getStatus());
         jobFetchBlocked.setDetails(job.getDetails());
         jobFetchBlocked.setBlockedByJobs(jobBlockers);
+        jobFetchBlocked.setStartDate(job.getCreatedAt().toLocalDate());
+        jobFetchBlocked.setUpdatedAt(job.getUpdatedAt().truncatedTo(ChronoUnit.SECONDS));
         jobFetchBlocked.setBlockedByRequisitions(requisitionBlockers);
         return jobFetchBlocked;
     }

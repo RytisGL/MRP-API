@@ -5,6 +5,7 @@ import org.mrp.mrp.dto.requisition.RequisitionFetch;
 import org.mrp.mrp.entities.Requisition;
 import org.mrp.mrp.enums.TypeDTO;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class RequisitionConverter {
         } else if (type == TypeDTO.FETCH) {
             dto = new RequisitionFetch();
             ((RequisitionFetch) dto).setId(requisition.getId());
+            ((RequisitionFetch) dto).setCreatedAt(requisition.getCreatedAt().truncatedTo(ChronoUnit.SECONDS));
         } else {
             throw new IllegalArgumentException("Invalid RequisitionType");
         }

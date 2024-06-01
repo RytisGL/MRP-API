@@ -2,13 +2,13 @@ package org.mrp.mrp.services;
 
 import lombok.RequiredArgsConstructor;
 import org.mrp.mrp.converters.JobConverter;
-import org.mrp.mrp.converters.JobStatusHistoryConverter;
+import org.mrp.mrp.converters.JobRecordConverter;
 import org.mrp.mrp.converters.RequisitionConverter;
 import org.mrp.mrp.dto.job.JobBase;
-import org.mrp.mrp.dto.jobstatushistory.JobStatusHistoryBase;
+import org.mrp.mrp.dto.jobrecord.JobRecordBase;
 import org.mrp.mrp.dto.requisition.RequisitionBase;
 import org.mrp.mrp.entities.Job;
-import org.mrp.mrp.entities.JobStatusHistory;
+import org.mrp.mrp.entities.JobRecord;
 import org.mrp.mrp.entities.Requisition;
 import org.mrp.mrp.entities.Stock;
 import org.mrp.mrp.enums.TypeDTO;
@@ -40,10 +40,6 @@ public class JobService {
         return JobConverter.jobToDTO(this.jobRepository.saveAndFlush(JobConverter.jobDTOToJob(jobDTO)), TypeDTO.FETCH);
     }
 
-    public List<JobBase> getJobs() {
-        return JobConverter.jobsToJobDTOs(this.jobRepository.findAll(), TypeDTO.FETCH);
-    }
-
     public JobBase deleteJobById(Long jobId) {
         Job job = this.jobRepository.findById(jobId).orElseThrow();
         this.jobRepository.delete(job);
@@ -66,10 +62,10 @@ public class JobService {
         return JobConverter.jobToDTO(job, TypeDTO.FETCH);
     }
 
-    public List<JobBase> getJobFiltered(JobBase jobDTO, String status, Long orderId) {
+    public List<JobBase> getJobs(JobBase jobDTO, String status, Long orderId) {
         //Return all jobs if no filters
         if (jobDTO == null && status == null && orderId == null) {
-            return this.getJobs();
+            return JobConverter.jobsToJobDTOs(this.jobRepository.findAll(), TypeDTO.FETCH);
         }
         //Create example job from dto or empty job to use as example
         Job example;
@@ -111,9 +107,9 @@ public class JobService {
                 this.jobRepository.findById(jobId).orElseThrow().getJobBlockers(), TypeDTO.FETCH);
     }
 
-    public List<JobStatusHistoryBase> getJobStatusHistoryByJobId(Long jobId) {
-        return JobStatusHistoryConverter.jobStatusHistoryToJobStatusHistoryDTOs(
-                this.jobRepository.findById(jobId).orElseThrow().getJobStatusHistory(), TypeDTO.FETCH);
+    public List<JobRecordBase> getJobStatusHistoryByJobId(Long jobId) {
+        return JobRecordConverter.jobStatusHistoryToJobStatusHistoryDTOs(
+                this.jobRepository.findById(jobId).orElseThrow().getJobRecord(), TypeDTO.FETCH);
     }
 
     public List<RequisitionBase> createRequisition(RequisitionBase requisitionDTO, Long jobId, Long stockId) {
@@ -130,13 +126,13 @@ public class JobService {
     }
 
     private void addJobStatusHistory(Job job, String newStatus, String updateDetails) {
-        List<JobStatusHistory> jobStatusHistoryList = job.getJobStatusHistory();
-        JobStatusHistory jobStatusHistory = new JobStatusHistory();
-        jobStatusHistory.setJob(job);
-        jobStatusHistory.setStatus(newStatus);
-        jobStatusHistory.setDetails(updateDetails);
-        jobStatusHistoryList.add(jobStatusHistory);
-        job.setJobStatusHistory(jobStatusHistoryList);
+        List<JobRecord> jobRecordList = job.getJobRecord();
+        JobRecord jobRecord = new JobRecord();
+        jobRecord.setJob(job);
+        jobRecord.setStatus(newStatus);
+        jobRecord.setDetails(updateDetails);
+        jobRecordList.add(jobRecord);
+        job.setJobRecord(jobRecordList);
     }
 
     public List<JobBase> getAvailableJobs(List<Job> jobs) {

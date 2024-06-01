@@ -51,11 +51,6 @@ public class StockService {
                         StockConverter.stockDTOTostock(stockBase)), TypeDTO.FETCH);
     }
 
-    public List<StockBase> getStock() {
-        return StockConverter.stockListToStockDTOs(
-                this.stockRepository.findAll(), TypeDTO.FETCH
-        );
-    }
 
     public StockBase deleteStockById(Long stockId) {
         Stock stock = this.stockRepository.findById(stockId).orElseThrow();
@@ -63,7 +58,10 @@ public class StockService {
         return StockConverter.stockToDTO(stock, TypeDTO.FETCH);
     }
 
-    public List<StockBase> getStockFiltered(StockBase filterStockBase) {
+    public List<StockBase> getStock(StockBase filterStockBase) {
+        if (filterStockBase == null) {
+            return StockConverter.stockListToStockDTOs(this.stockRepository.findAll(), TypeDTO.FETCH);
+        }
         Stock stock = StockConverter.stockDTOTostock(filterStockBase);
         return StockConverter.stockListToStockDTOs(this.stockRepository.findAll(Example.of(stock)), TypeDTO.FETCH);
     }
@@ -82,18 +80,16 @@ public class StockService {
         return PurchaseOrderConverter.purchaseOrderToDTO(purchaseOrder, TypeDTO.FETCH);
     }
 
-    public List<PurchaseOrderBase> getPurchaseOrders() {
-        return PurchaseOrderConverter.purchaseOrdersToPurchaseOrderDTOs(
-                this.purchaseOrderRepository.findAll(), TypeDTO.FETCH
-        );
-    }
-
     public List<PurchaseOrderBase> getPurchaseOrdersByStockId(Long stockId) {
         return PurchaseOrderConverter.purchaseOrdersToPurchaseOrderDTOs(
                 this.stockRepository.findById(stockId).orElseThrow().getPurchaseOrders(), TypeDTO.FETCH);
     }
 
-    public List<PurchaseOrderBase> getFilteredPurchaseOrders(PurchaseOrderBase purchaseOrderBase) {
+    public List<PurchaseOrderBase> getPurchaseOrders(PurchaseOrderBase purchaseOrderBase) {
+        if (purchaseOrderBase == null) {
+            return PurchaseOrderConverter.purchaseOrdersToPurchaseOrderDTOs(
+                    this.purchaseOrderRepository.findAll(), TypeDTO.FETCH);
+        }
         PurchaseOrder purchaseOrder = PurchaseOrderConverter.purchaseOrderDTOToPurchaseOrder(purchaseOrderBase);
         return PurchaseOrderConverter.purchaseOrdersToPurchaseOrderDTOs(
                 this.purchaseOrderRepository

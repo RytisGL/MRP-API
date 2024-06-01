@@ -3,6 +3,7 @@ package org.mrp.mrp.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mrp.mrp.dto.customerorder.CustomerOrderBase;
+import org.mrp.mrp.dto.template.customerorder.TemplateCustomerOrderFetch;
 import org.mrp.mrp.services.CustomerOrderService;
 import org.mrp.mrp.utils.Utils;
 import org.springframework.http.HttpStatus;
@@ -20,9 +21,9 @@ public class CustomerOrderController {
     private final CustomerOrderService customerOrderService;
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
-    @GetMapping
-    public ResponseEntity<List<CustomerOrderBase>> getCustomerOrders() {
-        return ResponseEntity.ok(this.customerOrderService.getCustomerOrders());
+    @GetMapping()
+    public ResponseEntity<List<CustomerOrderBase>> getCustomerOrders(@RequestBody (required = false) CustomerOrderBase customerOrder) {
+        return ResponseEntity.ok(this.customerOrderService.getCustomerOrders(customerOrder));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
@@ -32,21 +33,41 @@ public class CustomerOrderController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
+    @GetMapping(value = "/templates")
+    public ResponseEntity<List<TemplateCustomerOrderFetch>> getCustomerOrderTemplates() {
+        return ResponseEntity.ok(this.customerOrderService.getCustomerOrderTemplates());
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
+    @GetMapping(value = "/templates/{templateId}")
+    public ResponseEntity<TemplateCustomerOrderFetch> getCustomerOrderTemplateById(@PathVariable Long templateId) {
+        return ResponseEntity.ok(this.customerOrderService.getCustomerOrderTemplateById(templateId));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @GetMapping(value = "/{customerOrderId}")
     public ResponseEntity<CustomerOrderBase> getCustomerOrderById(@PathVariable Long customerOrderId) {
         return ResponseEntity.ok(this.customerOrderService.getCustomerOrderById(customerOrderId));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
-    @GetMapping(value = "/filters")
-    public ResponseEntity<List<CustomerOrderBase>> getFilteredCustomerOrders(@RequestBody CustomerOrderBase customerOrder) {
-        return ResponseEntity.ok(this.customerOrderService.getCustomerOrdersByCustomerFiltered(customerOrder));
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @PostMapping
     public ResponseEntity<CustomerOrderBase> createCustomerOrder(@RequestBody @Valid CustomerOrderBase customerOrder) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.customerOrderService.createCustomerOrder(customerOrder));
+    }
+
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
+    @PostMapping(value = "/{orderId}/templates")
+    public ResponseEntity<TemplateCustomerOrderFetch> createTemplateFromCustomerOrder(@PathVariable Long orderId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body( this.customerOrderService.createTemplateFromCustomerOrder(orderId));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
+    @PostMapping(value = "/templates/{templateId}")
+    public ResponseEntity<CustomerOrderBase> createCustomerOrderFromTemplate(@PathVariable Long templateId,
+                                                                             @RequestParam String customer) {
+        return ResponseEntity.status(HttpStatus.CREATED).body( this.customerOrderService.createCustomerOrderFromTemplate(templateId, customer));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
@@ -67,6 +88,12 @@ public class CustomerOrderController {
             @RequestBody @Valid CustomerOrderBase customerOrder)
     {
         return ResponseEntity.ok(this.customerOrderService.updateCustomerOrder(customerOrder, customerOrderId));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping(value = "/templates/{templateId}")
+    public ResponseEntity<TemplateCustomerOrderFetch> deleteTemplateCustomerOrderById(@PathVariable Long templateId) {
+        return ResponseEntity.ok(this.customerOrderService.deleteTemplateCustomerOrderById(templateId));
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

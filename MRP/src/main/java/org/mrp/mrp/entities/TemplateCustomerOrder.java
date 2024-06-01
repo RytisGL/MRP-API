@@ -5,25 +5,25 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class InventoryUsageRecord {
+public class TemplateCustomerOrder {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Float quantity;
+    private String product;
     private String status;
-    @ManyToOne
-    private Requisition requisition;
-    @ManyToOne
-    private Stock stock;
-    @ManyToOne @JoinColumn(referencedColumnName="email")
-    private User user;
+    @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL)
+    private List<TemplateJob> jobs;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 }
