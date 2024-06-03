@@ -76,7 +76,7 @@ public class StockService {
         List<PurchaseOrder> purchaseOrders = stock.getPurchaseOrders();
         PurchaseOrder purchaseOrder = PurchaseOrderConverter.purchaseOrderDTOToPurchaseOrder(purchaseOrderBase);
         purchaseOrders.add(purchaseOrder);
-        this.stockRepository.saveAndFlush(stock);
+        this.purchaseOrderRepository.saveAndFlush(purchaseOrder);
         return PurchaseOrderConverter.purchaseOrderToDTO(purchaseOrder, TypeDTO.FETCH);
     }
 

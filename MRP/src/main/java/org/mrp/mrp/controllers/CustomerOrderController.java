@@ -3,6 +3,7 @@ package org.mrp.mrp.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mrp.mrp.dto.customerorder.CustomerOrderBase;
+import org.mrp.mrp.dto.customerorder.CustomerOrderFromTemp;
 import org.mrp.mrp.dto.template.customerorder.TemplateCustomerOrderFetch;
 import org.mrp.mrp.services.CustomerOrderService;
 import org.mrp.mrp.utils.Utils;
@@ -27,6 +28,12 @@ public class CustomerOrderController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
+    @GetMapping(value = "/{customerOrderId}")
+    public ResponseEntity<CustomerOrderBase> getCustomerOrderById(@PathVariable Long customerOrderId) {
+        return ResponseEntity.ok(this.customerOrderService.getCustomerOrderById(customerOrderId));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @GetMapping(value = "/{orderId}/jobs")
     public ResponseEntity<CustomerOrderBase> getCustomerOrderJobsByOrderId(@PathVariable Long orderId) {
         return ResponseEntity.ok(this.customerOrderService.getCustomerOrderJobsById(orderId));
@@ -45,12 +52,6 @@ public class CustomerOrderController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
-    @GetMapping(value = "/{customerOrderId}")
-    public ResponseEntity<CustomerOrderBase> getCustomerOrderById(@PathVariable Long customerOrderId) {
-        return ResponseEntity.ok(this.customerOrderService.getCustomerOrderById(customerOrderId));
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @PostMapping
     public ResponseEntity<CustomerOrderBase> createCustomerOrder(@RequestBody @Valid CustomerOrderBase customerOrder) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.customerOrderService.createCustomerOrder(customerOrder));
@@ -66,8 +67,10 @@ public class CustomerOrderController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @PostMapping(value = "/templates/{templateId}")
     public ResponseEntity<CustomerOrderBase> createCustomerOrderFromTemplate(@PathVariable Long templateId,
-                                                                             @RequestParam String customer) {
-        return ResponseEntity.status(HttpStatus.CREATED).body( this.customerOrderService.createCustomerOrderFromTemplate(templateId, customer));
+                                                                             @RequestBody @Valid CustomerOrderFromTemp customerOrder)
+    {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                this.customerOrderService.createCustomerOrderFromTemplate(templateId, customerOrder));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")

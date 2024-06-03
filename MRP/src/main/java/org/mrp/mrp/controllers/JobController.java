@@ -45,7 +45,7 @@ public class JobController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping(value = "/{jobId}/history")
+    @GetMapping(value = "/{jobId}/records")
     public ResponseEntity<List<JobRecordBase>> getJobStatusHistory(@PathVariable Long jobId) {
         return ResponseEntity.ok(this.jobService.getJobStatusHistoryByJobId(jobId));
     }
@@ -66,15 +66,6 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.jobService.createRequisition(requisition, jobId, stockId));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @PatchMapping(value = "/{jobId}")
-    public ResponseEntity<JobBase> updateJob(
-            @PathVariable Long jobId,
-            @RequestBody @Valid JobBase job,
-            @RequestParam(value = "details") String updateDetails)
-    {
-        return ResponseEntity.ok(this.jobService.updateJob(job, jobId, updateDetails));
-    }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @PostMapping(value = "/{jobId}/blockers")
@@ -84,6 +75,15 @@ public class JobController {
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 this.jobService.addJobBlockers(jobId, Utils.parseStringIdStringToLongList(blockerJobIds)));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
+    @PatchMapping(value = "/{jobId}")
+    public ResponseEntity<JobBase> updateJob(
+            @PathVariable Long jobId,
+            @RequestBody @Valid JobBase job)
+    {
+        return ResponseEntity.ok(this.jobService.updateJob(job, jobId));
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

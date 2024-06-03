@@ -43,7 +43,6 @@ public abstract class TemplateConverter {
 
     public static TemplateCustomerOrder customerOrderToTempOrder(CustomerOrder customerOrder) {
         TemplateCustomerOrder templateCustomerOrder = new TemplateCustomerOrder();
-        templateCustomerOrder.setStatus(IN_PROGRESS);
         templateCustomerOrder.setProduct(customerOrder.getProduct());
         return templateCustomerOrder;
     }
@@ -87,7 +86,6 @@ public abstract class TemplateConverter {
         }
         templateCustomerOrderFetch.setId(template.getId());
         templateCustomerOrderFetch.setProduct(template.getProduct());
-        templateCustomerOrderFetch.setStatus(template.getStatus());
 
         return templateCustomerOrderFetch;
     }

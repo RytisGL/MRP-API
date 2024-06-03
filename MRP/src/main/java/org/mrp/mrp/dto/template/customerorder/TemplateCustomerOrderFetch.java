@@ -6,5 +6,4 @@ import lombok.Data;
 public class TemplateCustomerOrderFetch {
     private Long id;
     private String product;
-    private String status;
 }

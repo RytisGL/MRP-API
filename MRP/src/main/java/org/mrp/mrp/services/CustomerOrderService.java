@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.mrp.mrp.converters.CustomerOrderConverter;
 import org.mrp.mrp.converters.TemplateConverter;
 import org.mrp.mrp.dto.customerorder.CustomerOrderBase;
+import org.mrp.mrp.dto.customerorder.CustomerOrderFromTemp;
 import org.mrp.mrp.dto.template.customerorder.TemplateCustomerOrderFetch;
 import org.mrp.mrp.entities.*;
 import org.mrp.mrp.enums.TypeDTO;
@@ -96,11 +97,11 @@ public class CustomerOrderService {
                 TypeDTO.FETCH_JOBS);
     }
 
-    public CustomerOrderBase createCustomerOrderFromTemplate(Long templateId, String customer) {
+    public CustomerOrderBase createCustomerOrderFromTemplate(Long templateId, CustomerOrderFromTemp orderBase) {
         TemplateCustomerOrder templateCustomerOrder = this.templateCustomerOrderRepository.findById(templateId).orElseThrow();
         CustomerOrder customerOrder = new CustomerOrder();
-        customerOrder.setCustomer(customer);
-        customerOrder.setStatus(templateCustomerOrder.getStatus());
+        customerOrder.setCustomer(orderBase.getCustomer());
+        customerOrder.setStatus(orderBase.getStatus());
         customerOrder.setProduct(templateCustomerOrder.getProduct());
 
         //Saves which job is converter to which tempJob for setting blockers later.
