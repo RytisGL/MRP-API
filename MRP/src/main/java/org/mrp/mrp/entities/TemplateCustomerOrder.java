@@ -18,7 +18,6 @@ public class TemplateCustomerOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String product;
-    private String status;
     @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL)
     private List<TemplateJob> jobs;
     @CreationTimestamp

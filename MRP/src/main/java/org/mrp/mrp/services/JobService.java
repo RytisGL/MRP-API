@@ -46,12 +46,12 @@ public class JobService {
         return JobConverter.jobToDTO(job, TypeDTO.FETCH);
     }
 
-    public JobBase updateJob(JobBase jobDTO, Long jobId, String updateDetails) {
+    public JobBase updateJob(JobBase jobDTO, Long jobId) {
         Job job = this.jobRepository.findById(jobId).orElseThrow();
 
         //If status changed, status change history recorded
         if (!job.getStatus().equals(jobDTO.getStatus())) {
-            addJobStatusHistory(job, jobDTO.getStatus(), updateDetails);
+            addJobStatusHistory(job, jobDTO.getStatus(), jobDTO.getDetails());
         }
         //If status changed to complete, blocker record cleared
         if (jobDTO.getStatus().equals(COMPLETE)) {
@@ -116,6 +116,7 @@ public class JobService {
         Job job = this.jobRepository.findById(jobId).orElseThrow();
         Stock stock = this.stockRepository.findById(stockId).orElseThrow();
         Requisition requisition = RequisitionConverter.requisitionDTOToRequisition(requisitionDTO);
+
         requisition.setStock(stock);
         requisition.setJob(job);
         List<Requisition> requisitionList = job.getRequisitions();

@@ -15,11 +15,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -53,7 +54,7 @@ public class AuthenticationService {
     public UserFetch changeAuthority(Long userId, String role) {
         Role roleEnum = null;
         for (Role r : Role.values()) {
-            if (r.toString().equals(role)) {
+            if (r.toString().equalsIgnoreCase(role)) {
                 roleEnum = r;
             }
         }
@@ -68,6 +69,15 @@ public class AuthenticationService {
 
     public UserFetch deleteUser(Long userId) {
         User user = this.userRepository.findById(userId).orElseThrow();
+        this.userRepository.delete(user);
         return UserConverter.userToUserDTO(user);
+    }
+
+    public List<UserFetch> getUsers() {
+        return UserConverter.usersToUserDTOs(this.userRepository.findAll());
+    }
+
+    public UserFetch getUserByEmail(String email) {
+        return UserConverter.userToUserDTO(this.userRepository.findByEmail(email).orElseThrow());
     }
 }

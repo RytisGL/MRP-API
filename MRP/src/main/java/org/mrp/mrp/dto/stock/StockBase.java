@@ -15,6 +15,7 @@ public class StockBase {
     @Min(value = 1, message = "{validation.constraints.quantity.name} {validation.constraints.min.message}")
     private Float quantity;
     @NotBlank(message = "{validation.constraints.unit_of_measurement.name} {validation.constraints.not_blank.message}")
-    @Size(min = 5, max = 50, message = "{validation.constraints.unit_of_measurement.name} {validation.constraints.size.message}")
+    @Size(min = 2, max = 50, message = "{validation.constraints.unit_of_measurement.name} {validation.constraints" +
+            ".size.message}")
     private String unitOfMeasurement;
 }

@@ -6,7 +6,6 @@ import org.mrp.mrp.dto.customerorder.CustomerOrderFetchJobs;
 import org.mrp.mrp.entities.CustomerOrder;
 import org.mrp.mrp.enums.TypeDTO;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public abstract class CustomerOrderConverter {
             dto = new CustomerOrderFetchJobs();
             ((CustomerOrderFetchJobs) dto).setId(customerOrder.getId());
             ((CustomerOrderFetchJobs) dto).setOrderDate(customerOrder.getCreatedAt().toLocalDate());
-            ((CustomerOrderFetchJobs) dto).setJobs(JobConverter.jobsToJobDTOs(customerOrder.getJobs(), type));
+            ((CustomerOrderFetchJobs) dto).setJobs(JobConverter.jobsToJobDTOs(customerOrder.getJobs(), TypeDTO.FETCH));
         } else {
             throw new IllegalArgumentException("Invalid CustomerOrderType");
         }
