@@ -177,6 +177,10 @@ Changes a user's authority.
 **Query Params:**
 - `role=admin`
 
+  **Validations**
+
+- **available role:** `ADMIN`, `MANAGER`, `USER`
+
 **Example Request:**
 ```bash
 request: PATCH 'http://localhost:8080/users/authority?role=admin' 
