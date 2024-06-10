@@ -4,6 +4,11 @@ Material requirements planning API
 
 This documentation provides an overview of the User Management controller, including endpoints for user registration, login, retrieval, updating, and deletion.
 
+
+## Authorization
+
+All endpoints except /login and /register require a Bearer Token for authorization.
+
 ### Register User
 **Endpoint:** `POST /users/register`
 
