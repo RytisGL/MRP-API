@@ -179,7 +179,7 @@ Changes a user's authority.
 
   **Validations**
 
-- **available role:** `ADMIN`, `MANAGER`, `USER`
+- **available roles:** `ADMIN`, `MANAGER`, `USER`
 
 **Example Request:**
 ```bash
