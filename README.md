@@ -702,7 +702,8 @@ Retrieves all available jobs with optional filters. Available status retrieves j
 
 **Optional filters**
 - `status=available`, `status=blocked`
-- **Request Body:**
+
+**Request Body:**
   ```json
   {
       "type": "Manufacturing",
@@ -885,7 +886,14 @@ Creates a new requisition for a job and stock ID.
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
 - **Authorization:** Bearer Token
-- **Body:**
+
+
+**Validations**
+
+- **quantity:** `Not null`, `Max 999999999`, `Min 1`
+- **status:** `Not blank`, `Size 5-50`
+
+**Body:**
   ```json
   {
       "quantity" : 200,
@@ -928,6 +936,10 @@ Creates new blockers of existing jobs for a job. Returns a list of blockers.
 - **User authority:** `Admin, Manager`
 - **Query Params:** `ids`
 
+**Validations**
+
+- **ids can't have:** `Duplicates`, `Id of entity they are blocking`, `Non existant ids`
+
 **Example Request:**
 ```bash
 request: POST 'http://localhost:8080/jobs/{id}/blockers?ids=' 
@@ -959,7 +971,13 @@ Updates the status of a job by its ID.
 - **Method:** `PATCH`
 - **User authority:** `Admin, Manager, User`
 - **Authorization:** Bearer Token
-- **Body:**
+
+**Validations**
+
+- **status:** `Not blank`, `Size 5-50`
+- **id entity if status is changed to complete, can't have:** `Associated job blockers that are not complete`, `Associated requisitions that are not complete`
+
+**Body:**
   ```json
   {
       "status" : "Complete"
@@ -971,6 +989,7 @@ Updates the status of a job by its ID.
 request: PATCH 'http://localhost:8080/jobs/98'  
 data: '{
     "status" : "Complete"
+
 }'
 header: 'Authorization: Bearer <token>'
 ```
@@ -999,6 +1018,10 @@ Deletes a job by its ID.
 - **User authority:** `Admin, Manager`
 - **Authorization:** Bearer Token
 
+**Validations**
+
+- **id entity can't have:** `Associated requisitions`, `Associated job records`
+
 **Example Request:**
 ```bash
 request: DELETE 'http://localhost:8080/jobs/100' 
@@ -1018,6 +1041,7 @@ header: 'Authorization: Bearer <token>'
       "id": 100
   }
   ```
+
 # Stock Controller's Documentation
 
 This document provides an overview of the endpoints available in the Stock controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
