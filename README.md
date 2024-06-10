@@ -706,4 +706,748 @@ header: 'Authorization: Bearer <token>'
     },
 ]
 ```
+### Get Job by ID
+**Endpoint:** `GET /jobs/{id}`
+
+Retrieves a job by its ID.
+
+- **URL:** `http://localhost:8080/jobs/{id}`
+- **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: 'http://localhost:8080/jobs/56' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+      "type": "Manufacturing",
+      "details": "Manufacturing parts #3 Product #2",
+      "status": "In progress",
+      "startDate": "2024-06-03",
+      "updatedAt": "2024-06-03T09:14:21",
+      "id": 56
+  }
+  ```
+
+### Get Job Blockers
+**Endpoint:** `GET /jobs/{id}/blockers`
+
+Retrieves blockers for a job.
+
+- **URL:** `http://localhost:8080/jobs/{id}/blockers`
+- **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: 'http://localhost:8080/jobs/{id}/blockers' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  [
+      {
+          "type": "Painting",
+          "details": "Painting product #4",
+          "status": "In progress",
+          "startDate": "2024-06-03",
+          "updatedAt": "2024-06-03T05:54:29",
+          "id": 95
+      }
+  ]
+  ```
+
+### Get Job Records by Job ID
+**Endpoint:** `GET /jobs/{id}/records`
+
+Retrieves records for a specific job.
+
+- **URL:** `http://localhost:8080/jobs/{id}/records`
+- **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: 'http://localhost:8080/jobs/52/records' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  [
+      {
+          "status": "Complete",
+          "id": 1,
+          "userEmail": "nicole@example.com",
+          "createdAt": "2024-06-03T10:54:51.02578"
+      }
+  ]
+  ```
+
+### Get Requisition Records by Job ID
+**Endpoint:** `GET /jobs/{id}/requisitions/records`
+
+Retrieves requisition records for a job.
+
+- **URL:** `http://localhost:8080/jobs/{id}/requisitions/records`
+- **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: 'http://localhost:8080/jobs/{id}/requisitions/records' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  [
+      {
+          "quantity": 200,
+          "status": "Complete",
+          "user": {
+              "id": 202,
+              "email": "nicole@example.com",
+              "role": "ADMIN"
+          },
+          "id": 5,
+          "dateCreated": "2024-06-03T21:25:07"
+      },
+      {
+          "quantity": 200,
+          "status": "Complete",
+          "user": {
+              "id": 202,
+              "email": "nicole@example.com",
+              "role": "ADMIN"
+          },
+          "id": 6,
+          "dateCreated": "2024-06-03T21:29:36"
+      }
+  ]
+  ```
+
+### Create Requisition by Job and Stock ID
+**Endpoint:** `POST /{jobId}/requisitions/{stockId}`
+
+Creates a new requisition for a job and stock ID.
+
+- **URL:** `http://localhost:8080/jobs/{jobId}/requisitions/{stockId}`
+- **Method:** `POST`
+- **User authority:** `Admin, Manager`
+- **Authorization:** Bearer Token
+- **Body:**
+  ```json
+  {
+      "quantity" : 200,
+      "status" : "In progress"
+  }
+  ```
+
+**Example Request:**
+```bash
+request: POST 'http://localhost:8080/jobs/{jobId}/requisitions/{stockId}' 
+data: '{
+    "quantity" : 200,
+    "status" : "In progress"
+}'
+header: 'Authorization: Bearer <token>' 
+```
+
+**Success Response:**
+- **Status Code:** `201 CREATED`
+- **Body:**
+  ```json
+  [
+      {
+          "quantity": 200,
+          "status": "In progress",
+          "id": 52,
+          "createdAt": "2024-06-03T18:22:59"
+      }
+  ]
+  ```
+
+### Create Job Blockers by Job ID
+**Endpoint:** `POST /jobs/{id}/blockers?ids=`
+
+Creates new blockers of existing jobs for a job. Returns a list of blockers.
+
+- **URL:** `http://localhost:8080/jobs/{id}/blockers?ids=`
+- **Method:** `POST`
+- **Authorization:** Bearer Token
+- **User authority:** `Admin, Manager`
+- **Query Params:** `ids`
+
+**Example Request:**
+```bash
+request: POST 'http://localhost:8080/jobs/{id}/blockers?ids=' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `201 CREATED`
+- **Body:**
+  ```json
+  [
+      {
+          "type": "Test type",
+          "details": "Test details",
+          "status": "In progress",
+          "startDate": "2024-06-03",
+          "updatedAt": "2024-06-03T18:28:10",
+          "id": 96
+      }
+  ]
+  ```
+
+### Update Job Status by ID
+**Endpoint:** `PATCH /jobs/{id}`
+
+Updates the status of a job by its ID.
+
+- **URL:** `http://localhost:8080/jobs/{id}`
+- **Method:** `PATCH`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+- **Body:**
+  ```json
+  {
+      "status" : "Complete"
+  }
+  ```
+
+**Example Request:**
+```bash
+request: PATCH 'http://localhost:8080/jobs/98'  
+data: '{
+    "status" : "Complete"
+}'
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+      "type": "Type test",
+      "details": "Details test",
+      "status": "Complete",
+      "startDate": "2024-06-07",
+      "updatedAt": "2024-06-07T02:10:50",
+      "id": 98
+  }
+  ```
+
+### Delete Job by ID
+**Endpoint:** `DELETE /jobs/{id}`
+
+Deletes a job by its ID.
+
+- **URL:** `http://localhost:8080/jobs/{id}`
+- **Method:** `DELETE`
+- **User authority:** `Admin, Manager`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: DELETE 'http://localhost:8080/jobs/100' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+      "type": "Type test",
+      "details": "Details test",
+      "status": "In progress",
+      "startDate": "2024-06-03",
+      "updatedAt": "2024-06-03T07:03:52",
+      "id": 100
+  }
+  ```
+# Stock Controller's Documentation
+
+This document provides an overview of the endpoints available in the Stock controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
+
+## Authorization
+
+All endpoints within the Stock controller require authentication via a Bearer Token.
+
+### Get Stock
+**Endpoint:** `GET /stock`
+
+Retrieves a list of all stock items.
+
+- **URL:** `http://localhost:8080/stock`
+- **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+ 
+**Optional filters**
+- **Request Body:**
+  ```json
+  {
+      "name": "Stock #1",
+        "quantity": 900,
+        "unitOfMeasurement": "unit"
+  }
+  ```
+
+**Example Request:**
+```bash
+request: GET 'http://localhost:8080/stock' 
+optional data: '{
+        "name": "Stock #1",
+        "quantity": 900,
+        "unitOfMeasurement": "unit"
+}'
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  [
+      {
+          "name": "Stock #1",
+          "quantity": 900,
+          "unitOfMeasurement": "unit",
+          "id": 4
+      },
+      {
+          "name": "Stock #2",
+          "quantity": 2300,
+          "unitOfMeasurement": "unit",
+          "id": 5
+      },
+      {
+          "name": "Stock #3",
+          "quantity": 50,
+          "unitOfMeasurement": "unit",
+          "id": 6
+      }
+  ]
+  ```
+
+### Get Stock by ID
+**Endpoint:** `GET /stock/{id}`
+
+Retrieves a specific stock item by its ID.
+
+- **URL:** `http://localhost:8080/stock/{id}`
+- **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: GET 'http://localhost:8080/stock/11' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+      "name": "Name test",
+      "quantity": 200,
+      "unitOfMeasurement": "unit",
+      "id": 11
+  }
+  ```
+
+### Get Requisitions
+
+**Endpoint:** `GET /stock/requisitions`
+
+Fetches requisitions, can be filtered by their status.
+
+- **URL:** `http://localhost:8080/stock/requisitions`
+- **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+
+**Optional filters**
+- **Query Params:** `status`
+
+**Example Request:**
+
+```bash
+request: 'http://localhost:8080/stock/requisitions' optional: '?status=' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+
+- **Status Code:** `200 OK`
+- **Body:**
+
+  ```json
+  [
+      {
+          "quantity": 120,
+          "status": "In progress",
+          "id": 29,
+          "createdAt": "2024-06-03T09:40:15"
+      },
+      {
+          "quantity": 50,
+          "status": "In progress",
+          "id": 30,
+          "createdAt": "2024-06-03T09:40:30"
+      },
+     
+  ]
+  ```
+
+### Get Stock Records by Stock ID
+
+**Endpoint:** `GET /stock/{id}/records`
+
+Fetches stock records by stock id.
+
+- **URL:** `http://localhost:8080/stock/{id}/records`
+- **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+
+```bash
+request: 'http://localhost:8080/stock/{id}/records' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+
+- **Status Code:** `200 OK`
+- **Body:**
+
+  ```json
+  [
+      {
+          "quantity": 200,
+          "status": "Complete",
+          "user": {
+              "id": 202,
+              "email": "nicole@example.com",
+              "role": "ADMIN"
+          },
+          "id": 6,
+          "dateCreated": "2024-06-03T21:29:36"
+      }
+  ]
+  ```
+
+
+### Get Purchase Orders by Stock ID
+
+**Endpoint:** `GET /stock/{id}/porders`
+
+Fetches purchase orders by a specific stock ID.
+
+- **URL:** `http://localhost:8080/stock/{id}/porders`
+- **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+
+```bash
+request: 'http://localhost:8080/stock/{id}/porders' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+
+- **Status Code:** `200 OK`
+- **Body:**
+
+  ```json
+  [
+      {
+          "quantity": 2000,
+          "deliveryDate": "2025-01-01",
+          "status": "In progress",
+          "id": 1
+      }
+  ]
+  ```
+
+### Get Purchase Orders
+**Endpoint:** `GET /stock/porders`
+
+Retrieves a list of purchase orders.
+
+- **URL:** `http://localhost:8080/stock/porders`
+- **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: 'http://localhost:8080/stock/porders' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  [
+      {
+          "quantity": 2000,
+          "deliveryDate": "2025-01-01",
+          "status": "In progress",
+          "id": 1
+      }
+  ]
+  ```
+
+### Complete Requisition
+**Endpoint:** `PUT /stock/requisitions/{id}`
+
+Marks a requisition as complete.
+
+- **URL:** `http://localhost:8080/stock/requisitions/{id}`
+- **Method:** `PUT`
+- **User authority:** `Admin, Manager, User`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: PUT 'http://localhost:8080/stock/requisitions/50' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+      "quantity": 50,
+      "status": "Complete"
+  }
+  ```
+
+### Create Purchase Order by Stock ID
+**Endpoint:** `POST /stock/{id}/porders`
+
+Creates a new purchase order for a specific stock item.
+
+- **URL:** `http://localhost:8080/stock/{id}/porders`
+- **Method:** `POST`
+- **User authority:** `Admin, Manager`
+- **Authorization:** Bearer Token
+- **Body:**
+  ```json
+  {
+      "quantity": 200,
+      "deliveryDate": "2025-01-01",
+      "status": "In progress"
+  }
+  ```
+
+**Example Request:**
+```bash
+request: POST 'http://localhost:8080/stock/{id}/porders' 
+data: '{
+    "quantity": 200,
+    "deliveryDate": "2025-01-01",
+    "status": "In progress"
+}'
+header: 'Authorization: Bearer <token>' 
+```
+
+**Success Response:**
+- **Status Code:** `201 CREATED`
+- **Body:**
+  ```json
+  {
+      "quantity": 200,
+      "deliveryDate": "2025-01-01",
+      "status": "In progress",
+      "id": 2
+  }
+  ```
+
+### Update Stock from Purchase Order
+**Endpoint:** `PATCH /stock/porders/{id}`
+
+Updates the stock information based on a purchase order.
+
+- **URL:** `http://localhost:8080/stock/porders/{id}`
+- **Method:** `PATCH`
+- **User authority:** `Admin, Manager`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: PATCH 'http://localhost:8080/stock/porders/{id}' 
+data: '{
+    "name": "Name test",
+    "quantity": 400,
+    "unitOfMeasurement": "unit"
+}'
+header: 'Authorization: Bearer <token>' 
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+      "name": "Name test",
+      "quantity": 400,
+      "unitOfMeasurement": "unit",
+      "id": 11
+  }
+  ```
+
+### Create Stock
+**Endpoint:** `POST /stock`
+
+Creates a new stock item.
+
+- **URL:** `http://localhost:8080/stock`
+- **Method:** `POST`
+- **User authority:** `Admin, Manager`
+- **Authorization:** Bearer Token
+- **Body:**
+  ```json
+  {
+      "name": "Name test",
+      "quantity": 200,
+      "unitOfMeasurement": "unit"
+  }
+  ```
+
+**Example Request:**
+```bash
+request: POST 'http://localhost:8080/stock' 
+data: '{
+    "name": "Name test",
+    "quantity": 200,
+    "unitOfMeasurement": "unit"
+}'
+header: 'Authorization: Bearer <token>' 
+```
+
+**Success Response:**
+- **Status Code:** `201 CREATED`
+- **Body:**
+  ```json
+  {
+      "name": "Name test",
+      "quantity": 200,
+      "unitOfMeasurement": "unit",
+      "id": 11
+  }
+  ```
+### Delete Stock by ID
+**Endpoint:** `DELETE /stock/{id}`
+
+Deletes a stock entry by its ID.
+
+- **URL:** `http://localhost:8080/stock/{id}`
+- **Method:** `DELETE`
+- **User authority:** `Admin`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: DELETE 'http://localhost:8080/stock/12' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+      "name": "Name test",
+      "quantity": 200,
+      "unitOfMeasurement": "unit",
+      "id": 12
+  }
+  ```
+
+### Delete Purchase Order by ID
+**Endpoint:** `DELETE /stock/porder/{id}`
+
+Deletes a purchase order by its ID.
+
+- **URL:** `http://localhost:8080/stock/porder/{id}`
+- **Method:** `DELETE`
+- **User authority:** `Admin`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: DELETE 'http://localhost:8080/stock/porder/5' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+      "quantity": 200,
+      "deliveryDate": "2025-01-01",
+      "status": "Complete",
+      "id": 5
+  }
+  ```
+
+### Delete Requisition by ID
+**Endpoint:** `DELETE /stock/requisitions/{id}`
+
+Deletes a requisition by its ID.
+
+- **URL:** `http://localhost:8080/stock/requisitions/{id}`
+- **Method:** `DELETE`
+- **User authority:** `Admin`
+- **Authorization:** Bearer Token
+
+**Example Request:**
+```bash
+request: DELETE 'http://localhost:8080/stock/requisitions/48' 
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+      "quantity": 200,
+      "status": "In progress",
+      "id": 48,
+      "createdAt": "2024-06-04T20:59:14"
+  }
+  ```
 
