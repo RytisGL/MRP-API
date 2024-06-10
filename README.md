@@ -255,7 +255,6 @@ header: 'Authorization: Bearer <token>'
           "id": 25,
           "orderDate": "2024-06-03"
       },
-      ...
   ]
   ```
 
@@ -323,7 +322,6 @@ header: 'Authorization: Bearer <token>'
               "updatedAt": "2024-06-03T09:54:51",
               "id": 52
           },
-          ...
       ]
   }
   ```
@@ -391,7 +389,6 @@ header: 'Authorization: Bearer <token>'
                   }
               ]
           },
-          ...
       ]
   }
   ```
