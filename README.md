@@ -34,7 +34,6 @@ data: '{
     "email": "email@email.com",
     "password": "password1A"
 }'
-header: 'Authorization: Bearer <token>'
 ```
 
 **Success Response:**
@@ -70,7 +69,6 @@ data: '{
     "email": "email@email.com",
     "password": "password1A"
 }'
-header: 'Authorization: Bearer <token>'
 ```
 
 **Success Response:**
@@ -166,7 +164,7 @@ Changes a user's authority.
 
 **Example Request:**
 ```bash
-request: PATCH 'http://localhost:8080/users//authority?role=admin' 
+request: PATCH 'http://localhost:8080/users/authority?role=admin' 
 header: 'Authorization: Bearer <token>'
 ```
 
@@ -215,31 +213,34 @@ This document provides an overview of the endpoints available in the Orders cont
 
 All endpoints require a Bearer Token for authorization.
 
-Sure, here's the updated documentation for the Orders controller, formatted to match the structure of the first endpoint example:
-
-### Get Filtered Customer Orders
+### Get Customer Orders
 **Endpoint:** `GET /orders`
 
-Retrieves customer orders filtered by status.
+Retrieves customer orders.
 
 - **URL:** `http://localhost:8080/orders`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager`
 - **Authorization:** Bearer Token
 
-**Request Body:**
+**Optional filters**
+
+- **Request Body:**
   ```json
   {
-      "status": "In progress"
+      "customer": "Customer #1",
+        "product": "Product #1",
+        "status": "In progress"
   }
-  ```
 
 **Example Request:**
   ```bash
 request: GET 'http://localhost:8080/orders' 
-data: '{
+optional data: '{
+    "customer": "Customer #1",
+      "product": "Product #1",
       "status": "In progress"
-  }'
+}'
 header: 'Authorization: Bearer <token>'
   ```
 
@@ -371,7 +372,7 @@ header: 'Authorization: Bearer <token>'
   ```
 
 **Success Response:**
-- **Status Code:** `201 Created`
+- **Status Code:** `200 OK`
 - **Body:**
   ```json
   {
@@ -644,3 +645,61 @@ header: 'Authorization: Bearer <token>'
       "product": "Product #4"
   }
   ```
+
+# Job controller's Documentation
+
+This document provides an overview of the endpoints available in the Job controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
+
+## Authorization
+
+All endpoints within the Job controller require authentication via a Bearer Token.
+
+## Get Jobs
+
+**Endpoint:** `GET /jobs`
+
+Retrieves all available jobs with optional filters. Available status retrieves jobs that are not blocked by other processes.
+
+- **URL:** `http://localhost:8080/jobs`
+- **Method:** `GET`
+- **Authorization:** Bearer Token
+
+**Optional filters**
+- `status=available`, `status=blocked`
+- **Request Body:**
+  ```json
+  {
+      "type": "Manufacturing",
+        "details": "Manufacturing parts #1 Product #1",
+        "status": "Complete"
+  }
+  ```
+
+
+**Example Request:**
+```bash
+request: 'http://localhost:8080/jobs' optional: '?status=' 
+optional data: '{
+    "type": "Manufacturing",
+      "details": "Manufacturing parts #1 Product #1",
+      "status": "Complete"
+}'
+header: 'Authorization: Bearer <token>'
+```
+
+**Success Response:**
+- **Status Code:** `200 OK`
+- **Body:**
+```json
+[
+    {
+        "type": "Manufacturing",
+        "details": "Manufacturing parts #1 Product #1",
+        "status": "Complete",
+        "startDate": "2024-06-03",
+        "updatedAt": "2024-06-03T09:54:51",
+        "id": 52
+    },
+]
+```
+
