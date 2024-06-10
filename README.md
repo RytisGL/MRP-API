@@ -18,6 +18,13 @@ Registers a new user.
 - **Method:** `POST`
 - **User authority:** `Anonymous`
 
+**Validations**
+- **firstname:** `Not blank`, `Size 2-50`
+- **lastname:** `Not blank`, `Size 5-50`
+- **email:** `Not blank`, `Size 5-50`, `Email`, `Unique`
+- **lastname:** `Not blank`, `Size 8-20`,`Containts Uppercase letter`,`Containts Number`
+
+
 **Body:**
 ```json
 {
@@ -56,6 +63,11 @@ Logs in a user.
 - **URL:** `http://localhost:8080/users/login`
 - **Method:** `POST`
 - **User authority:** `Anonymous`
+
+**Validations**
+
+- **email:** `Not blank`, `Size 5-50`
+- **lastname:** `Not blank`, `Size 8-20`
 
 **Body:**
 ```json
@@ -207,7 +219,6 @@ header: 'Authorization: Bearer <token>'
       "role": "ADMIN"
   }
   ```
-
 # Orders controller's Documentation
 
 This document provides an overview of the endpoints available in the Orders controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
