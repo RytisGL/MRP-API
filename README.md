@@ -4,8 +4,6 @@ Material requirements planning API
 
 This documentation provides an overview of the User Management controller, including endpoints for user registration, login, retrieval, updating, and deletion.
 
-## Endpoints
-
 ### Register User
 **Endpoint:** `POST /users/register`
 
