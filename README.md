@@ -418,6 +418,13 @@ Creates a new customer order.
 - **User authority:** `Admin, Manager`
 - **Authorization:** Bearer Token
 
+
+**Validations**
+- **customer:** `Not blank`, `Size 5-50`
+- **product:** `Not blank`, `Size 5-50`
+- **status:** `Not blank`, `Size 5-50`
+
+
 **Request Body:**
   ```json
   {
@@ -460,6 +467,11 @@ Creates a job associated with a specific customer order.
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
 - **Authorization:** Bearer Token
+
+**Validations**
+- **type:** `Not blank`, `Size 5-50`
+- **details:** `Not blank`, `Size 5-50`
+- **status:** `Not blank`, `Size 5-50`
 
 **Request Body:**
   ```json
@@ -572,6 +584,11 @@ Updates a specific customer order.
 - **User authority:** `Admin, Manager`
 - **Authorization:** Bearer Token
 
+**Validations**
+- **customer:** `Not blank`, `Size 5-50`
+- **product:** `Not blank`, `Size 5-50`
+- **status:** `Not blank`, `Size 5-50`
+
 **Request Body:**
   ```json
   {
@@ -614,6 +631,10 @@ Deletes a specific customer order by its ID.
 - **Method:** `DELETE`
 - **User authority:** `Admin`
 - **Authorization:** Bearer Token
+
+**Validations**
+- **id entity can't have:** `associated jobs`
+
 
 **Example Request:**
   ```bash
