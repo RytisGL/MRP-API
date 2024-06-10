@@ -177,7 +177,7 @@ Changes a user's authority.
 **Query Params:**
 - `role=admin`
 
-  **Validations**
+**Validations**
 
 - **available roles:** `ADMIN`, `MANAGER`, `USER`
 
