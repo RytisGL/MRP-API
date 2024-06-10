@@ -7,7 +7,7 @@ This documentation provides an overview of the User Management controller, inclu
 
 ## Authorization
 
-All endpoints except /login and /register require a Bearer Token for authorization.
+All endpoints except login and register require a Bearer Token for authorization. Login and register enpoints requires user to be annonymous.
 
 ### Register User
 **Endpoint:** `POST /users/register`
