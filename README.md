@@ -187,7 +187,7 @@ header: 'Authorization: Bearer <token>'
 
 Deletes a user by ID.
 
-- **URL:** `http://localhost:8080/users/`
+- **URL:** `http://localhost:8080/users/{id}`
 - **Method:** `DELETE`
 - **User authority:** `Admin`
 - **Authorization:** Bearer Token
