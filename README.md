@@ -665,6 +665,7 @@ Retrieves all available jobs with optional filters. Available status retrieves j
 
 - **URL:** `http://localhost:8080/jobs`
 - **Method:** `GET`
+- **User authority:** `Admin, Manager, User`
 - **Authorization:** Bearer Token
 
 **Optional filters**
