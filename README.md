@@ -1318,7 +1318,14 @@ Creates a new purchase order for a specific stock item.
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
 - **Authorization:** Bearer Token
-- **Body:**
+
+
+**Validations**
+- **quatity:** `Max - 999999999`, `Min - 1`
+- **deliveryDate:** `Future date`
+- **status:** `Not blank`, `Size 5-50`
+
+**Body:**
   ```json
   {
       "quantity": 200,
@@ -1392,7 +1399,13 @@ Creates a new stock item.
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
 - **Authorization:** Bearer Token
-- **Body:**
+
+**Validations**
+- **name:** `Not blank`, `Size 5-50`
+- **quantity:** `Max - 999999999`, `Min - 1`
+- **unitOfmeasurement:** `Not blank`, `Size 2-50`
+
+**Body:**
   ```json
   {
       "name": "Name test",
@@ -1432,6 +1445,10 @@ Deletes a stock entry by its ID.
 - **Method:** `DELETE`
 - **User authority:** `Admin`
 - **Authorization:** Bearer Token
+
+**Validations**
+- **id entity can't have:** `Associated purchase orders`, `Associated purchase requisitions`, `Associated inventory records`
+
 
 **Example Request:**
 ```bash
@@ -1506,4 +1523,3 @@ header: 'Authorization: Bearer <token>'
       "createdAt": "2024-06-04T20:59:14"
   }
   ```
-
