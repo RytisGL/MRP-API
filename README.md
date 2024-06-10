@@ -103,7 +103,7 @@ Retrieves all users.
 - **URL:** `http://localhost:8080/users`
 - **Method:** `GET`
 - **User authority:** `Admin`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
@@ -142,7 +142,7 @@ Retrieves a user by email.
 - **URL:** `http://localhost:8080/users?email=`
 - **Method:** `GET`
 - **User authority:** `Admin`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 - **Query Params:** `email`
 
 **Example Request:**
@@ -172,7 +172,7 @@ Changes a user's authority.
 - **URL:** `http://localhost:8080/users/authority?role=admin`
 - **Method:** `PATCH`
 - **User authority:** `Admin`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Query Params:**
 - `role=admin`
@@ -202,7 +202,7 @@ Deletes a user by ID.
 - **URL:** `http://localhost:8080/users/{id}`
 - **Method:** `DELETE`
 - **User authority:** `Admin`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
  ```bash
@@ -235,7 +235,7 @@ Retrieves customer orders.
 - **URL:** `http://localhost:8080/orders`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Optional filters**
 
@@ -281,7 +281,7 @@ Retrieves a customer order by its ID.
 - **URL:** `http://localhost:8080/orders/{id}`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
   ```bash
@@ -310,7 +310,7 @@ Retrieves jobs associated with a customer order.
 - **URL:** `http://localhost:8080/orders/{id}/jobs`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
   ```bash
@@ -349,7 +349,7 @@ Retrieves available order templates.
 - **URL:** `http://localhost:8080/orders/templates`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
   ```bash
@@ -377,7 +377,7 @@ Retrieves a specific order template by ID.
 - **URL:** `http://localhost:8080/orders/templates/{id}`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
   ```bash
@@ -416,7 +416,7 @@ Creates a new customer order.
 - **URL:** `http://localhost:8080/orders`
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 
 **Validations**
@@ -466,7 +466,7 @@ Creates a job associated with a specific customer order.
 - **URL:** `http://localhost:8080/orders/{id}/jobs`
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Validations**
 - **type:** `Not blank`, `Size 5-50`
@@ -515,7 +515,7 @@ Creates a template from a specific customer order.
 - **URL:** `http://localhost:8080/orders/{id}/templates`
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
   ```bash
@@ -541,7 +541,7 @@ Creates a customer order from a specific template.
 - **URL:** `http://localhost:8080/orders/templates/{templateId}`
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Request Body:**
   ```json
@@ -582,7 +582,7 @@ Updates a specific customer order.
 - **URL:** `http://localhost:8080/orders/{id}`
 - **Method:** `PATCH`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Validations**
 - **customer:** `Not blank`, `Size 5-50`
@@ -630,7 +630,7 @@ Deletes a specific customer order by its ID.
 - **URL:** `http://localhost:8080/orders/{id}`
 - **Method:** `DELETE`
 - **User authority:** `Admin`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Validations**
 - **id entity can't have:** `associated jobs`
@@ -663,7 +663,7 @@ Deletes a specific customer order template by its ID.
 - **URL:** `http://localhost:8080/orders/templates/{templateId}`
 - **Method:** `DELETE`
 - **User authority:** `Admin`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
   ```bash
@@ -698,7 +698,7 @@ Retrieves all available jobs with optional filters. Available status retrieves j
 - **URL:** `http://localhost:8080/jobs`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Optional filters**
 - `status=available`, `status=blocked`
@@ -747,7 +747,7 @@ Retrieves a job by its ID.
 - **URL:** `http://localhost:8080/jobs/{id}`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
@@ -777,7 +777,7 @@ Retrieves blockers for a job.
 - **URL:** `http://localhost:8080/jobs/{id}/blockers`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
@@ -809,7 +809,7 @@ Retrieves records for a specific job.
 - **URL:** `http://localhost:8080/jobs/{id}/records`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
@@ -839,7 +839,7 @@ Retrieves requisition records for a job.
 - **URL:** `http://localhost:8080/jobs/{id}/requisitions/records`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
@@ -885,7 +885,7 @@ Creates a new requisition for a job and stock ID.
 - **URL:** `http://localhost:8080/jobs/{jobId}/requisitions/{stockId}`
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 
 **Validations**
@@ -932,7 +932,7 @@ Creates new blockers of existing jobs for a job. Returns a list of blockers.
 
 - **URL:** `http://localhost:8080/jobs/{id}/blockers?ids=`
 - **Method:** `POST`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 - **User authority:** `Admin, Manager`
 - **Query Params:** `ids`
 
@@ -970,7 +970,7 @@ Updates the status of a job by its ID.
 - **URL:** `http://localhost:8080/jobs/{id}`
 - **Method:** `PATCH`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Validations**
 
@@ -1016,7 +1016,7 @@ Deletes a job by its ID.
 - **URL:** `http://localhost:8080/jobs/{id}`
 - **Method:** `DELETE`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Validations**
 
@@ -1058,7 +1058,7 @@ Retrieves a list of all stock items.
 - **URL:** `http://localhost:8080/stock`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
  
 **Optional filters**
 - **Request Body:**
@@ -1115,7 +1115,7 @@ Retrieves a specific stock item by its ID.
 - **URL:** `http://localhost:8080/stock/{id}`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
@@ -1144,7 +1144,7 @@ Fetches requisitions, can be filtered by their status.
 - **URL:** `http://localhost:8080/stock/requisitions`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Optional filters**
 - **Query Params:** `status`
@@ -1188,7 +1188,7 @@ Fetches stock records by stock id.
 - **URL:** `http://localhost:8080/stock/{id}/records`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 
@@ -1228,7 +1228,7 @@ Fetches purchase orders by a specific stock ID.
 - **URL:** `http://localhost:8080/stock/{id}/porders`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 
@@ -1261,7 +1261,7 @@ Retrieves a list of purchase orders.
 - **URL:** `http://localhost:8080/stock/porders`
 - **Method:** `GET`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
@@ -1291,7 +1291,7 @@ Marks a requisition as complete.
 - **URL:** `http://localhost:8080/stock/requisitions/{id}`
 - **Method:** `PUT`
 - **User authority:** `Admin, Manager, User`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
@@ -1317,7 +1317,7 @@ Creates a new purchase order for a specific stock item.
 - **URL:** `http://localhost:8080/stock/{id}/porders`
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 
 **Validations**
@@ -1365,7 +1365,7 @@ Updates the stock information based on a purchase order.
 - **URL:** `http://localhost:8080/stock/porders/{id}`
 - **Method:** `PATCH`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
@@ -1398,7 +1398,7 @@ Creates a new stock item.
 - **URL:** `http://localhost:8080/stock`
 - **Method:** `POST`
 - **User authority:** `Admin, Manager`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Validations**
 - **name:** `Not blank`, `Size 5-50`
@@ -1444,7 +1444,7 @@ Deletes a stock entry by its ID.
 - **URL:** `http://localhost:8080/stock/{id}`
 - **Method:** `DELETE`
 - **User authority:** `Admin`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Validations**
 - **id entity can't have:** `Associated purchase orders`, `Associated purchase requisitions`, `Associated inventory records`
@@ -1476,7 +1476,7 @@ Deletes a purchase order by its ID.
 - **URL:** `http://localhost:8080/stock/porder/{id}`
 - **Method:** `DELETE`
 - **User authority:** `Admin`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
@@ -1504,7 +1504,7 @@ Deletes a requisition by its ID.
 - **URL:** `http://localhost:8080/stock/requisitions/{id}`
 - **Method:** `DELETE`
 - **User authority:** `Admin`
-- **Authorization:** Bearer Token
+- **Authorization:** `Bearer Token`
 
 **Example Request:**
 ```bash
