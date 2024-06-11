@@ -1,6 +1,32 @@
-# MRP-API
-Material requirements planning API
-# User Management controller Documentation
+# Material Requirements Planning (MRP) API Documentation
+
+## Overview
+
+The Material Requirements Planning (MRP) API provides a comprehensive solution for managing materials, jobs, and orders within a manufacturing or production environment. This API supports user creation and authorization, order and job creation, job dependencies, stock management, and detailed change records for jobs and requisitions.
+
+## Features
+
+### User Management
+- **User Creation**: Create new users to access the MRP system.
+- **User Authorization**: Manage user roles and permissions to ensure secure access to API functionalities.
+
+### Order Management
+- **Order Creation**: Create and manage orders to streamline your production process.
+- **Job Creation**: Assign jobs to orders and manage their lifecycle.
+
+### Job Management
+- **Job Dependencies**: Structure jobs that block each other to provide a clear workflow. Define the sequence in which jobs need to be completed to avoid bottlenecks and ensure smooth operations.
+
+### Stock Management
+- **Requisitions**: Assign requisitions to jobs, manage their lifecycle, and ensure that all necessary materials are available when needed.
+- **Stock Management**: Handle basic stock functionalities including tracking inventory levels and managing stock movements.
+- **Purchase Orders**: Create and manage purchase orders for acquiring additional stock.
+
+### Change Records
+- **Job Change Records**: Keep detailed records of changes made to jobs, providing a clear audit trail.
+- **Requisition Change Records**: Maintain records of changes made to requisitions to ensure traceability and accountability.
+
+# User Management
 
 This documentation provides an overview of the User Management controller, including endpoints for user registration, login, retrieval, updating, and deletion.
 
@@ -223,7 +249,7 @@ header: 'Authorization: Bearer <token>'
       "role": "ADMIN"
   }
   ```
-# Orders controller's Documentation
+# Order Managment
 
 This document provides an overview of the endpoints available in the Orders controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
 
@@ -685,7 +711,7 @@ header: 'Authorization: Bearer <token>'
   }
   ```
 
-# Job controller's Documentation
+# Job Managment
 
 This document provides an overview of the endpoints available in the Job controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
 
@@ -1046,7 +1072,7 @@ header: 'Authorization: Bearer <token>'
   }
   ```
 
-# Stock Controller's Documentation
+# Stock Managment
 
 This document provides an overview of the endpoints available in the Stock controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
 
@@ -1527,3 +1553,7 @@ header: 'Authorization: Bearer <token>'
       "createdAt": "2024-06-04T20:59:14"
   }
   ```
+  
+## Conclusion
+
+The MRP API provides a robust set of tools for managing users, orders, jobs, stock, and change records, ensuring efficient and traceable operations within your production environment. By leveraging the API's functionalities, you can streamline your material requirements planning and maintain accurate records of all processes.
