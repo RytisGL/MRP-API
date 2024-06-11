@@ -1553,6 +1553,10 @@ header: 'Authorization: Bearer <token>'
       "createdAt": "2024-06-04T20:59:14"
   }
   ```
+
+## Change records
+
+Changes to job status and requisitions are recorded. Job status change is recorded in job record and requisition changes are recorded in inventory usage record.
   
 ## Conclusion
 
