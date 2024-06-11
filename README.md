@@ -1,6 +1,6 @@
 <img src="https://codeacademy.lt/wp-content/themes/codeacademy/dist/images/codeacademy-black.svg" alt="Logo" width="800" height="250"/>
 
-# Material Requirements Planning (MRP) API Documentation
+<h1 align="center">Material Requirements Planning (MRP) API Documentation</h1>
 
 ## Overview
 
