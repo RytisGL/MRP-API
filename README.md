@@ -6,7 +6,7 @@ The Material Requirements Planning (MRP) API provides a comprehensive solution f
 
 ## Features
 
-### [User Management](#user-management)
+### [User Management](#user-management-1)
 - **User Creation**: Create new users to access the MRP system.
 - **User Authorization**: Manage user roles and permissions to ensure secure access to API functionalities.
 
