@@ -1,5 +1,7 @@
 # Material Requirements Planning (MRP) API Documentation
 
+![Logo](https://codeacademy.lt/wp-content/themes/codeacademy/dist/images/codeacademy-black.svg)
+
 ## Overview
 
 The Material Requirements Planning (MRP) API provides a comprehensive solution for managing materials, jobs, and orders within a manufacturing or production environment. This API supports user creation and authorization, order and job creation, job dependencies, stock management, and detailed change records for jobs and requisitions.
