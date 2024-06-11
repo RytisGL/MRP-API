@@ -6,7 +6,7 @@ The Material Requirements Planning (MRP) API provides a comprehensive solution f
 
 ## Features
 
-### User Management
+### [User Management](#user-management)
 - **User Creation**: Create new users to access the MRP system.
 - **User Authorization**: Manage user roles and permissions to ensure secure access to API functionalities.
 
@@ -26,10 +26,9 @@ The Material Requirements Planning (MRP) API provides a comprehensive solution f
 - **Job Change Records**: Keep detailed records of changes made to jobs, providing a clear audit trail.
 - **Requisition Change Records**: Maintain records of changes made to requisitions to ensure traceability and accountability.
 
-# User Management
+## User Management
 
 This documentation provides an overview of the User Management controller, including endpoints for user registration, login, retrieval, updating, and deletion.
-
 
 ## Authorization
 
