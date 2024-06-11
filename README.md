@@ -969,7 +969,7 @@ header: 'Authorization: Bearer <token>'
 ### Update Job Status by ID
 **Endpoint:** `PATCH /jobs/{id}`
 
-Updates the status of a job by its ID.
+Updates the status of a job by its ID, status change to complete removes existing job blockers, any status change produces job record.
 
 - **URL:** `http://localhost:8080/jobs/{id}`
 - **Method:** `PATCH`
@@ -1290,7 +1290,7 @@ header: 'Authorization: Bearer <token>'
 ### Complete Requisition
 **Endpoint:** `PUT /stock/requisitions/{id}`
 
-Marks a requisition as complete.
+Completes requisition, removes if requisition has enough associated stock to complete or marks it out of stock, while producing inventory usage record.
 
 - **URL:** `http://localhost:8080/stock/requisitions/{id}`
 - **Method:** `PUT`
