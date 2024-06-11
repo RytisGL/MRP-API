@@ -35,7 +35,7 @@ ___
 
 This documentation provides an overview of the User Management controller, including endpoints for user registration, login, retrieval, updating, and deletion.
 
-## Authorization
+### Authorization
 
 All endpoints except login and register require a Bearer Token for authorization. Login and register enpoints requires user to be annonymous.
 
@@ -253,11 +253,11 @@ header: 'Authorization: Bearer <token>'
       "role": "ADMIN"
   }
   ```
-# Order Management
+## Order Management
 
 This document provides an overview of the endpoints available in the Orders controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
 
-## Authorization
+### Authorization
 
 All endpoints require a Bearer Token for authorization.
 
@@ -715,11 +715,11 @@ header: 'Authorization: Bearer <token>'
   }
   ```
 
-# Job Managment
+## Job Managment
 
 This document provides an overview of the endpoints available in the Job controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
 
-## Authorization
+### Authorization
 
 All endpoints within the Job controller require authentication via a Bearer Token.
 
@@ -1076,11 +1076,11 @@ header: 'Authorization: Bearer <token>'
   }
   ```
 
-# Stock Managment
+## Stock Managment
 
 This document provides an overview of the endpoints available in the Stock controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
 
-## Authorization
+### Authorization
 
 All endpoints within the Stock controller require authentication via a Bearer Token.
 
