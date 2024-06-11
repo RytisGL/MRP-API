@@ -248,7 +248,7 @@ header: 'Authorization: Bearer <token>'
       "role": "ADMIN"
   }
   ```
-# Order Managment
+# Order Management
 
 This document provides an overview of the endpoints available in the Orders controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
 
