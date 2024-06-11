@@ -22,7 +22,7 @@ The Material Requirements Planning (MRP) API provides a comprehensive solution f
 - **Stock Management**: Handle basic stock functionalities including tracking inventory levels and managing stock movements.
 - **Purchase Orders**: Create and manage purchase orders for acquiring additional stock.
 
-### [Change Records](#change-records)
+<a href="#Change Records">Change Records</a>
 - **Job Change Records**: Keep detailed records of changes made to jobs, providing a clear audit trail.
 - **Requisition Change Records**: Maintain records of changes made to requisitions to ensure traceability and accountability.
 
