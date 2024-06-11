@@ -28,6 +28,9 @@ The Material Requirements Planning (MRP) API provides a comprehensive solution f
 
 ### [Conclusion](#conclusion-1)
 
+```
+```
+
 ## User Management
 
 This documentation provides an overview of the User Management controller, including endpoints for user registration, login, retrieval, updating, and deletion.
