@@ -31,7 +31,7 @@ The Material Requirements Planning (MRP) API provides a comprehensive solution f
 
 ___
 
-## User Management <p align="right" style="font-size: 12px;">[back](#features)</p>
+## User Management 
 
 This documentation provides an overview of the User Management controller, including endpoints for user registration, login, retrieval, updating, and deletion.
 
@@ -253,6 +253,9 @@ header: 'Authorization: Bearer <token>'
       "role": "ADMIN"
   }
   ```
+
+<p align="right" style="font-size: 6px;">[back](#features)</p>
+
 ## Order Management
 
 This document provides an overview of the endpoints available in the Orders controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
