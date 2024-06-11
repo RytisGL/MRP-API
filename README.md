@@ -10,19 +10,19 @@ The Material Requirements Planning (MRP) API provides a comprehensive solution f
 - **User Creation**: Create new users to access the MRP system.
 - **User Authorization**: Manage user roles and permissions to ensure secure access to API functionalities.
 
-### Order Management
+### [Order Management](#order-management)
 - **Order Creation**: Create and manage orders to streamline your production process.
 - **Job Creation**: Assign jobs to orders and manage their lifecycle.
 
-### Job Management
+### [Job Management](#job-management)
 - **Job Dependencies**: Structure jobs that block each other to provide a clear workflow. Define the sequence in which jobs need to be completed to avoid bottlenecks and ensure smooth operations.
 
-### Stock Management
+### [Stock Management](#stock-management)
 - **Requisitions**: Assign requisitions to jobs, manage their lifecycle, and ensure that all necessary materials are available when needed.
 - **Stock Management**: Handle basic stock functionalities including tracking inventory levels and managing stock movements.
 - **Purchase Orders**: Create and manage purchase orders for acquiring additional stock.
 
-### Change Records
+### [Change Records](#change-records)
 - **Job Change Records**: Keep detailed records of changes made to jobs, providing a clear audit trail.
 - **Requisition Change Records**: Maintain records of changes made to requisitions to ensure traceability and accountability.
 
