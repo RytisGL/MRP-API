@@ -254,8 +254,6 @@ header: 'Authorization: Bearer <token>'
   }
   ```
 
-<p align="right" style="font-size: 6px;">[back](#features)</p>
-
 ## Order Management
 
 This document provides an overview of the endpoints available in the Orders controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
