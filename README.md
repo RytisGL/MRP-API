@@ -1553,7 +1553,7 @@ header: 'Authorization: Bearer <token>'
   }
   ```
 
-## Change records
+## Change Records
 
 Changes to job status and requisitions are recorded. Job status change is recorded in job record and requisition changes are recorded in inventory usage record.
   
