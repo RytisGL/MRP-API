@@ -716,7 +716,7 @@ header: 'Authorization: Bearer <token>'
   }
   ```
 
-## Job Managment
+## Job Management
 
 This document provides an overview of the endpoints available in the Job controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
 
@@ -1077,7 +1077,7 @@ header: 'Authorization: Bearer <token>'
   }
   ```
 
-## Stock Managment
+## Stock Management
 
 This document provides an overview of the endpoints available in the Stock controller. Each endpoint includes the necessary information for authorization, request structure, and example responses.
 
