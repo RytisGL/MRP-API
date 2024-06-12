@@ -1,4 +1,4 @@
-package org.mrp.mrp.exceptions;
+package org.mrp.mrp.exceptions.errorresponses;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

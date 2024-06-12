@@ -19,12 +19,12 @@ public abstract class JobRecordConverter {
         } else if (type == TypeDTO.FETCH) {
             dto = new JobRecordFetch();
             ((JobRecordFetch) dto).setId(jobHistory.getId());
+            ((JobRecordFetch) dto).setUserEmail(jobHistory.getUser().getEmail());
             ((JobRecordFetch) dto).setCreatedAt(jobHistory.getCreatedAt());
         } else {
             throw new IllegalArgumentException("Invalid JobStatusHistoryType");
         }
         dto.setStatus(jobHistory.getStatus());
-        dto.setDetails(jobHistory.getDetails());
         return dto;
     }
 

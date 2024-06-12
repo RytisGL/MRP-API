@@ -21,14 +21,10 @@ public class UserController {
 
     private final UserService userService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<UserFetch>> getUsers() {
-        return ResponseEntity.ok(this.userService.getUsers());
-    }
-
-    @GetMapping("/{email}")
-    public ResponseEntity<UserFetch> getUser(@PathVariable String email) {
-        return ResponseEntity.ok(this.userService.getUserByEmail(email));
+    public ResponseEntity<List<UserFetch>> getUsers(@RequestParam (value = "email", required = false) String email) {
+        return ResponseEntity.ok(this.userService.getUsers(email));
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

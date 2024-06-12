@@ -64,10 +64,4 @@ public abstract class JobConverter {
         }
         return dtos;
     }
-
-    public static void updateJobDTOToJob(JobBase dto, Job job) {
-        job.setType(dto.getType());
-        job.setStatus(dto.getStatus());
-        job.setDetails(dto.getDetails());
-    }
 }

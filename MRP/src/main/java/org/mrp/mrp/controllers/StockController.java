@@ -2,6 +2,7 @@ package org.mrp.mrp.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.mrp.mrp.dto.inventoryusagerecord.InventoryUsageRecordBase;
 import org.mrp.mrp.dto.purchaseorder.PurchaseOrderBase;
 import org.mrp.mrp.dto.requisition.RequisitionBase;
@@ -24,7 +25,7 @@ public class StockController {
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
     @GetMapping()
-    public ResponseEntity<List<StockBase>> getFilteredStock(@RequestBody (required = false) StockBase stockBase) {
+    public ResponseEntity<List<StockBase>> getStock(@RequestBody (required = false) StockBase stockBase) {
         return ResponseEntity.ok(this.stockService.getStock(stockBase));
     }
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
@@ -35,26 +36,14 @@ public class StockController {
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
     @GetMapping(value = "/requisitions")
-    public ResponseEntity<List<RequisitionBase>> getRequisitions() {
-        return ResponseEntity.ok(this.stockService.getRequisitions());
+    public ResponseEntity<List<RequisitionBase>> getRequisitions(@RequestParam (required = false) String status) {
+        return ResponseEntity.ok(this.stockService.getRequisitions(status));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping(value = "{stockId}/history")
-    public ResponseEntity<List<InventoryUsageRecordBase>> getRequisitionsHistory(@PathVariable Long stockId) {
+    @GetMapping(value = "{stockId}/records")
+    public ResponseEntity<List<InventoryUsageRecordBase>> getRequisitionsRecords(@PathVariable Long stockId) {
         return ResponseEntity.ok(this.stockService.getRequisitionsHistoryByStockId(stockId));
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping(value = "/requisitions/{requisitionId}/history")
-    public ResponseEntity<List<InventoryUsageRecordBase>> getRequisitionsHistoryByRequisitionId(@PathVariable Long requisitionId) {
-        return ResponseEntity.ok(this.stockService.getRequisitionsHistoryByRequisitionId(requisitionId));
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
-    @GetMapping(value = "/requisitions/available")
-    public ResponseEntity<List<RequisitionBase>> getAvailableRequisitions() {
-        return ResponseEntity.ok(this.stockService.getAvailableRequisitions());
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
@@ -94,7 +83,7 @@ public class StockController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER' or hasAuthority('USER'))")
-    @PatchMapping(value = "/requisitions/{requisitionId}")
+    @PutMapping(value = "/requisitions/{requisitionId}")
     public ResponseEntity<InventoryUsageRecordBase> stockRequisition(
             @PathVariable Long requisitionId,
             Authentication authentication)
@@ -102,9 +91,22 @@ public class StockController {
         return ResponseEntity.ok(this.stockService.stockRequisition(requisitionId, authentication));
     }
 
+    @SneakyThrows
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping(value = "/{stockId}")
     public ResponseEntity<StockBase> deleteStock(@PathVariable Long stockId) {
         return ResponseEntity.ok(this.stockService.deleteStockById(stockId));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping(value = "/porder/{porderId}")
+    public ResponseEntity<PurchaseOrderBase> deletePurchaseOrder(@PathVariable Long porderId) {
+        return ResponseEntity.ok(this.stockService.deletePurchaseOrderById(porderId));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping(value = "/requisitions/{requisitionId}")
+    public ResponseEntity<RequisitionBase> deleteRequisition(@PathVariable Long requisitionId) {
+        return ResponseEntity.ok(this.stockService.deleteRequisitionById(requisitionId));
     }
 }

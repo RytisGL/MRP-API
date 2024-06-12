@@ -1,10 +1,14 @@
 package org.mrp.mrp.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.mrp.mrp.converters.InventoryUsageRecordConverter;
 import org.mrp.mrp.converters.JobConverter;
 import org.mrp.mrp.converters.JobRecordConverter;
 import org.mrp.mrp.converters.RequisitionConverter;
+import org.mrp.mrp.dto.inventoryusagerecord.InventoryUsageRecordBase;
 import org.mrp.mrp.dto.job.JobBase;
+import org.mrp.mrp.dto.job.JobStatus;
 import org.mrp.mrp.dto.jobrecord.JobRecordBase;
 import org.mrp.mrp.dto.requisition.RequisitionBase;
 import org.mrp.mrp.entities.Job;
@@ -12,10 +16,14 @@ import org.mrp.mrp.entities.JobRecord;
 import org.mrp.mrp.entities.Requisition;
 import org.mrp.mrp.entities.Stock;
 import org.mrp.mrp.enums.TypeDTO;
+import org.mrp.mrp.exceptions.customexceptions.UniqueDataException;
+import org.mrp.mrp.exceptions.customexceptions.ValidationConstraintException;
 import org.mrp.mrp.repositories.CustomerOrderRepository;
 import org.mrp.mrp.repositories.JobRepository;
 import org.mrp.mrp.repositories.StockRepository;
+import org.mrp.mrp.repositories.UserRepository;
 import org.springframework.data.domain.Example;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,40 +35,47 @@ public class JobService {
     private final JobRepository jobRepository;
     private final StockRepository stockRepository;
     private final CustomerOrderRepository customerOrderRepository;
+    private final UserRepository userRepository;
 
     private static final String COMPLETE = "Complete";
     private static final String BLOCKED = "Blocked";
     private static final String AVAILABLE = "Available";
+    private static final String JOB_EXCEPTION_MESSAGE = "validation.constraints.job.name";
 
     public JobBase getJobById(Long jobId) {
-        return JobConverter.jobToDTO(this.jobRepository.findById(jobId).orElseThrow(), TypeDTO.FETCH);
+        return JobConverter.jobToDTO(this.jobRepository.findById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException(JOB_EXCEPTION_MESSAGE)), TypeDTO.FETCH);
     }
 
-    public JobBase createJob(JobBase jobDTO) {
-        return JobConverter.jobToDTO(this.jobRepository.saveAndFlush(JobConverter.jobDTOToJob(jobDTO)), TypeDTO.FETCH);
-    }
+    public JobBase deleteJobById(Long jobId) throws ValidationConstraintException {
+        Job job = this.jobRepository.findById(jobId).orElseThrow(() -> new EntityNotFoundException("validation" +
+                ".constraints.job.name"));
 
-    public JobBase deleteJobById(Long jobId) {
-        Job job = this.jobRepository.findById(jobId).orElseThrow();
+        validateStockConstraints(job);
+
         this.jobRepository.delete(job);
         return JobConverter.jobToDTO(job, TypeDTO.FETCH);
     }
 
-    public JobBase updateJob(JobBase jobDTO, Long jobId) {
-        Job job = this.jobRepository.findById(jobId).orElseThrow();
+    public JobBase updateJobStatus(JobStatus jobStatus, Long jobId, Authentication authentication) throws ValidationConstraintException {
+        Job job = this.jobRepository.findById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException(JOB_EXCEPTION_MESSAGE));
 
-        //If status changed, status change history recorded
-        if (!job.getStatus().equals(jobDTO.getStatus())) {
-            addJobStatusHistory(job, jobDTO.getStatus(), jobDTO.getDetails());
-        }
-        //If status changed to complete, blocker record cleared
-        if (jobDTO.getStatus().equals(COMPLETE)) {
+        if (jobStatus.getStatus().equalsIgnoreCase(COMPLETE)) {
+            validateBlockers(job);
             job.setJobBlockers(null);
         }
-        JobConverter.updateJobDTOToJob(jobDTO, job);
+
+        //If status changed, status change history recorded
+        if (!job.getStatus().equalsIgnoreCase(jobStatus.getStatus())) {
+            addJobStatusHistory(job, jobStatus.getStatus(), authentication);
+        }
+
+        job.setStatus(jobStatus.getStatus());
         this.jobRepository.saveAndFlush(job);
         return JobConverter.jobToDTO(job, TypeDTO.FETCH);
     }
+
 
     public List<JobBase> getJobs(JobBase jobDTO, String status, Long orderId) {
         //Return all jobs if no filters
@@ -80,7 +95,8 @@ public class JobService {
         }
         //Adds customer order to example if not null
         if (orderId != null) {
-            example.setCustomerOrder(this.customerOrderRepository.findById(orderId).orElseThrow());
+            example.setCustomerOrder(this.customerOrderRepository.findById(orderId)
+                    .orElseThrow(() -> new EntityNotFoundException("validation.constraints.order.name")));
         }
         //Returns blocked based on example
         if (status != null && status.equalsIgnoreCase(BLOCKED)) {
@@ -94,27 +110,55 @@ public class JobService {
         return JobConverter.jobsToJobDTOs(this.jobRepository.findAll(Example.of(example)), TypeDTO.FETCH);
     }
 
-    public List<JobBase> addJobBlockers(Long jobId, List<Long> blockerJobIds) {
-        Job job = this.jobRepository.findById(jobId).orElseThrow();
-        List<Job> blockers = this.jobRepository.findAllById(blockerJobIds);
-        job.setJobBlockers(blockers);
+    public List<JobBase> addJobBlockers(Long jobId, List<Long> blockerJobIds) throws ValidationConstraintException {
+        if (blockerJobIds.contains(jobId)) {
+            throw new ValidationConstraintException("exception.errors.blockers_contains_job.message");
+        }
+
+        Job job = this.jobRepository.findById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException(JOB_EXCEPTION_MESSAGE));
+
+        List<Job> newBlockers = this.jobRepository.findAllById(blockerJobIds);
+
+        //Checks if all of the ids provided were found
+        if (blockerJobIds.size() != newBlockers.size()) {
+            throw new EntityNotFoundException("validation.constraints.jobs.name");
+        }
+
+        job.setJobBlockers(validateBlockersUnique(job.getJobBlockers(), newBlockers));
         this.jobRepository.saveAndFlush(job);
-        return JobConverter.jobsToJobDTOs(blockers, TypeDTO.FETCH);
+        return JobConverter.jobsToJobDTOs(newBlockers, TypeDTO.FETCH);
     }
 
     public List<JobBase> getJobBlockersById(Long jobId) {
         return JobConverter.jobsToJobDTOs(
-                this.jobRepository.findById(jobId).orElseThrow().getJobBlockers(), TypeDTO.FETCH);
+                this.jobRepository.findById(jobId)
+                        .orElseThrow(() -> new EntityNotFoundException(JOB_EXCEPTION_MESSAGE))
+                        .getJobBlockers(), TypeDTO.FETCH);
     }
 
     public List<JobRecordBase> getJobStatusHistoryByJobId(Long jobId) {
         return JobRecordConverter.jobStatusHistoryToJobStatusHistoryDTOs(
-                this.jobRepository.findById(jobId).orElseThrow().getJobRecord(), TypeDTO.FETCH);
+                this.jobRepository.findById(jobId)
+                        .orElseThrow(() -> new EntityNotFoundException(JOB_EXCEPTION_MESSAGE))
+                        .getJobRecord(), TypeDTO.FETCH);
+    }
+
+
+    public List<InventoryUsageRecordBase> getJobRequisitionsRecordsByJobId(Long jobId) {
+        return InventoryUsageRecordConverter.inventoryUsageRecordsToInventoryUsageRecordDTOs(
+                this.jobRepository.findById(jobId)
+                        .orElseThrow(() -> new EntityNotFoundException(JOB_EXCEPTION_MESSAGE))
+                        .getInventoryUsageRecord(), TypeDTO.FETCH);
     }
 
     public List<RequisitionBase> createRequisition(RequisitionBase requisitionDTO, Long jobId, Long stockId) {
-        Job job = this.jobRepository.findById(jobId).orElseThrow();
-        Stock stock = this.stockRepository.findById(stockId).orElseThrow();
+        Job job = this.jobRepository.findById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException(JOB_EXCEPTION_MESSAGE));
+
+        Stock stock = this.stockRepository.findById(stockId)
+                .orElseThrow(() -> new EntityNotFoundException("validation.constraints.stock.name"));
+
         Requisition requisition = RequisitionConverter.requisitionDTOToRequisition(requisitionDTO);
 
         requisition.setStock(stock);
@@ -126,12 +170,15 @@ public class JobService {
         return RequisitionConverter.requisitionsToRequisitionDTOs(job.getRequisitions(), TypeDTO.FETCH);
     }
 
-    private void addJobStatusHistory(Job job, String newStatus, String updateDetails) {
+    private void addJobStatusHistory(Job job, String newStatus, Authentication authentication) {
         List<JobRecord> jobRecordList = job.getJobRecord();
         JobRecord jobRecord = new JobRecord();
         jobRecord.setJob(job);
         jobRecord.setStatus(newStatus);
-        jobRecord.setDetails(updateDetails);
+
+        jobRecord.setUser(this.userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new EntityNotFoundException("validation.constraints.user.name")));
+
         jobRecordList.add(jobRecord);
         job.setJobRecord(jobRecordList);
     }
@@ -140,12 +187,9 @@ public class JobService {
         List<JobBase> availableJobs = new ArrayList<>();
         for (Job job : jobs) {
             boolean jobAvailable;
-            if (job.getStatus().equals(COMPLETE)) {
-                continue;
-            }
             jobAvailable = isCompleteJob(job.getJobBlockers());
             if (jobAvailable) {
-                jobAvailable = isCompleteRequisition(job.getRequisitions());
+                jobAvailable = job.getRequisitions().isEmpty();
             }
             if (jobAvailable) {
                 availableJobs.add(JobConverter.jobToDTO(job, TypeDTO.FETCH));
@@ -160,14 +204,11 @@ public class JobService {
             List<JobBase> jobBlockers = new ArrayList<>();
             List<RequisitionBase> requisitionList = new ArrayList<>();
             boolean jobAvailable = true;
-            if (job.getStatus().equals(COMPLETE)) {
-                continue;
-            }
             if (!isCompleteJob(job.getJobBlockers())) {
                 jobBlockers = JobConverter.jobsToJobDTOs(job.getJobBlockers(), TypeDTO.FETCH);
                 jobAvailable = false;
             }
-            if (!isCompleteRequisition(job.getRequisitions())) {
+            if (!job.getRequisitions().isEmpty()) {
                 requisitionList = RequisitionConverter.requisitionsToRequisitionDTOs(job.getRequisitions(), TypeDTO.FETCH);
                 jobAvailable = false;
             }
@@ -179,15 +220,6 @@ public class JobService {
         return jobFetchBlockedList;
     }
 
-    private boolean isCompleteRequisition(List<Requisition> requisitions) {
-        for (Requisition requisition : requisitions) {
-            if (!requisition.getStatus().equals(COMPLETE)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     private boolean isCompleteJob(List<Job> jobs) {
         for (Job jobBlocker : jobs) {
             if (!jobBlocker.getStatus().equals(COMPLETE)) {
@@ -195,5 +227,40 @@ public class JobService {
             }
         }
         return true;
+    }
+
+    private void validateStockConstraints(Job job) throws ValidationConstraintException {
+        if (!job.getInventoryUsageRecord().isEmpty()) {
+            throw new ValidationConstraintException("validation.constraints.inventory_record.message");
+        }
+        if (!job.getRequisitions().isEmpty()) {
+            throw new ValidationConstraintException("validation.constraints.requisition.message");
+        }
+    }
+
+
+    private void validateBlockers(Job job) throws ValidationConstraintException {
+        List<Job> blockers = job.getJobBlockers();
+        if (!blockers.isEmpty()) {
+            for (Job blocker : blockers) {
+                if (!blocker.getStatus().equalsIgnoreCase(COMPLETE)) {
+                    throw new ValidationConstraintException("validation.constraints.blocker.message");
+                }
+            }
+        }
+        if (!job.getRequisitions().isEmpty()) {
+            throw new ValidationConstraintException("validation.constraints.requisitions.message");
+        }
+    }
+
+    private List<Job> validateBlockersUnique(List<Job> blockers,
+    List<Job> newBlockers) {
+        for(Job blocker : newBlockers) {
+            if(blockers.contains(blocker)) {
+                throw new UniqueDataException("exception.errors.blocker_unique.message");
+            }
+            blockers.add(blocker);
+        }
+        return blockers;
     }
 }

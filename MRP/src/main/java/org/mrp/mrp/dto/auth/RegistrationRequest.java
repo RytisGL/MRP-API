@@ -2,6 +2,7 @@ package org.mrp.mrp.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegistrationRequest {
     @NotBlank(message = "{validation.constraints.firstname.name} {validation.constraints.not_blank.message}")
-    @Size(min = 5, max = 50, message = "{validation.constraints.firstname.name} {validation.constraints.size.message}")
+    @Size(min = 2, max = 50, message = "{validation.constraints.firstname.name} {validation.constraints.size.message}")
     private String firstname;
     @NotBlank(message = "{validation.constraints.lastname.name} {validation.constraints.not_blank.message}")
     @Size(min = 5, max = 50, message = "{validation.constraints.lastname.name} {validation.constraints.size.message}")
@@ -23,7 +24,7 @@ public class RegistrationRequest {
     @Size(min = 5, max = 50, message = "{validation.constraints.email.name} {validation.constraints.size.message}")
     @Email(message = "{validation.constraints.email.message}")
     private String email;
-    @NotBlank(message = "{validation.constraints.password.name} {validation.constraints.not_blank.message}")
-    @Size(min = 5, max = 50, message = "{validation.constraints.password.name} {validation.constraints.size.message}")
+    @Pattern(regexp = "^(?!.* )(?=.*\\d)(?=.*[A-Z]).{8,20}$", message = "{validation.constraints.password.name} " +
+            "{validation.constraints.password_pattern.message}")
     private String password;
 }

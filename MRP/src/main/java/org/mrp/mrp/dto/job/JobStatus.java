@@ -1,12 +1,11 @@
-package org.mrp.mrp.dto.jobrecord;
+package org.mrp.mrp.dto.job;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.mrp.mrp.dto.user.UserFetch;
 
 @Data
-public class JobRecordBase {
+public class JobStatus {
     @NotBlank(message = "{validation.constraints.status.name} {validation.constraints.not_blank.message}")
     @Size(min = 5, max = 50, message = "{validation.constraints.status.name} {validation.constraints.size.message}")
     private String status;
