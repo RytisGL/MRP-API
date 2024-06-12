@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface RequisitionRepository extends JpaRepository <Requisition, Long> {
     List<Requisition> findAllByStockId(Long stockId);
+    List<Requisition> findAllByStatus(String status);
 }

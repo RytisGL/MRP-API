@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Entity
@@ -20,10 +19,8 @@ public class Requisition {
     private String status;
     @ManyToOne
     private Job job;
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne ()
     private Stock stock;
-    @OneToMany (mappedBy = "requisition", cascade = CascadeType.ALL)
-    private List<InventoryUsageRecord> inventoryUsageRecordList;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

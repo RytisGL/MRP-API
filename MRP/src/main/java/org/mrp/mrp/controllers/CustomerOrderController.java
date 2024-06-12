@@ -2,8 +2,10 @@ package org.mrp.mrp.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.mrp.mrp.dto.customerorder.CustomerOrderBase;
 import org.mrp.mrp.dto.customerorder.CustomerOrderFromTemp;
+import org.mrp.mrp.dto.job.JobBase;
 import org.mrp.mrp.dto.template.customerorder.TemplateCustomerOrderFetch;
 import org.mrp.mrp.services.CustomerOrderService;
 import org.mrp.mrp.utils.Utils;
@@ -74,14 +76,9 @@ public class CustomerOrderController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
-    @PatchMapping(value = "/{customerOrderId}/jobs")
-    public ResponseEntity<CustomerOrderBase> addJobsToCustomerOrder(
-            @PathVariable Long customerOrderId,
-            @RequestParam(value = "jobIds") String jobIds)
-    {
-        return ResponseEntity.ok(
-                this.customerOrderService.addJobsToCustomerOrder(
-                        Utils.parseStringIdStringToLongList(jobIds), customerOrderId));
+    @PostMapping(value = "/{orderId}/jobs")
+    public ResponseEntity<JobBase> createJob(@PathVariable Long orderId,@RequestBody @Valid JobBase job) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.customerOrderService.createJob(job, orderId));
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
@@ -99,6 +96,7 @@ public class CustomerOrderController {
         return ResponseEntity.ok(this.customerOrderService.deleteTemplateCustomerOrderById(templateId));
     }
 
+    @SneakyThrows
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping(value = "/{customerOrderId}")
     public ResponseEntity<CustomerOrderBase> deleteCustomerOrder(@PathVariable Long customerOrderId) {

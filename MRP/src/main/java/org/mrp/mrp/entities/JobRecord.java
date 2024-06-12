@@ -14,7 +14,8 @@ public class JobRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String status;
-    private String details;
+    @ManyToOne @JoinColumn(referencedColumnName="email")
+    private User user;
     @ManyToOne
     private Job job;
     @CreationTimestamp

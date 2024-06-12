@@ -17,7 +17,7 @@ public class InventoryUsageRecord {
     private Float quantity;
     private String status;
     @ManyToOne
-    private Requisition requisition;
+    private Job job;
     @ManyToOne
     private Stock stock;
     @ManyToOne @JoinColumn(referencedColumnName="email")

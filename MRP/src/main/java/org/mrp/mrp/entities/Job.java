@@ -22,6 +22,8 @@ public class Job {
     private List<JobRecord> jobRecord;
     @ManyToOne
     CustomerOrder customerOrder;
+    @OneToMany (mappedBy = "job")
+    List<InventoryUsageRecord> inventoryUsageRecord;
     @OneToMany (mappedBy = "job", cascade = CascadeType.ALL)
     private List<Requisition> requisitions;
     @OneToMany (cascade = CascadeType.ALL)
