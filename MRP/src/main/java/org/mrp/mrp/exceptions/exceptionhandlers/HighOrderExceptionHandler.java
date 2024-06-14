@@ -4,6 +4,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.mrp.mrp.exceptions.customexceptions.ProductionConstraintException;
 import org.mrp.mrp.exceptions.customexceptions.UniqueDataException;
 import org.mrp.mrp.exceptions.customexceptions.ValidationConstraintException;
 import org.mrp.mrp.exceptions.errorresponses.BaseErrorResponse;
@@ -110,6 +111,18 @@ public class HighOrderExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, CONFLICT);
     }
 
+    @ExceptionHandler(ProductionConstraintException.class)
+    protected ResponseEntity<Object> handleProductionConstraintException(WebRequest request,
+                                                                 ProductionConstraintException ex) {
+        BaseErrorResponse errorResponse = getBaseErrorResponse(
+                "Production constraint exception",
+                ex.getMessage(),
+                I_AM_A_TEAPOT,
+                request.getLocale());
+
+        return new ResponseEntity<>(errorResponse, I_AM_A_TEAPOT);
+    }
+
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<Object> handleNoSuchElementException(WebRequest request) {
         BaseErrorResponse errorResponse = getBaseErrorResponse(
@@ -214,8 +227,8 @@ public class HighOrderExceptionHandler extends ResponseEntityExceptionHandler {
 
     private BaseErrorResponse getBaseErrorResponse(String error, String message, HttpStatus status, Locale locale) {
         BaseErrorResponse baseErrorResponse = new BaseErrorResponse();
-        baseErrorResponse.setMessage(messageSource.getMessage(message, null, "default message", locale));
-        baseErrorResponse.setError(messageSource.getMessage(error, null, "default message", locale));
+        baseErrorResponse.setMessage(messageSource.getMessage(message, null, message, locale));
+        baseErrorResponse.setError(messageSource.getMessage(error, null, error, locale));
         baseErrorResponse.setStatus(status.value());
         return baseErrorResponse;
     }
@@ -223,9 +236,9 @@ public class HighOrderExceptionHandler extends ResponseEntityExceptionHandler {
     private BaseErrorResponse getBaseErrorResponse(String entityName, String error, String message, HttpStatus status,
                                                    Locale locale) {
         BaseErrorResponse baseErrorResponse = new BaseErrorResponse();
-        baseErrorResponse.setMessage(messageSource.getMessage(message, null, "default message",
+        baseErrorResponse.setMessage(messageSource.getMessage(message, null, message,
                 locale));
-        baseErrorResponse.setError(entityName + " " + messageSource.getMessage(error, null, "default message", locale));
+        baseErrorResponse.setError(entityName + " " + messageSource.getMessage(error, null, error, locale));
         baseErrorResponse.setStatus(status.value());
         return baseErrorResponse;
     }

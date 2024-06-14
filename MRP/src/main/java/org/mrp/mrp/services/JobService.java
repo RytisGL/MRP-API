@@ -2,6 +2,7 @@ package org.mrp.mrp.services;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.mrp.mrp.converters.InventoryUsageRecordConverter;
 import org.mrp.mrp.converters.JobConverter;
 import org.mrp.mrp.converters.JobRecordConverter;
@@ -16,6 +17,7 @@ import org.mrp.mrp.entities.JobRecord;
 import org.mrp.mrp.entities.Requisition;
 import org.mrp.mrp.entities.Stock;
 import org.mrp.mrp.enums.TypeDTO;
+import org.mrp.mrp.exceptions.customexceptions.ProductionConstraintException;
 import org.mrp.mrp.exceptions.customexceptions.UniqueDataException;
 import org.mrp.mrp.exceptions.customexceptions.ValidationConstraintException;
 import org.mrp.mrp.repositories.CustomerOrderRepository;
@@ -120,7 +122,7 @@ public class JobService {
 
         List<Job> newBlockers = this.jobRepository.findAllById(blockerJobIds);
 
-        //Checks if all of the ids provided were found
+        //Checks if all the ids provided were found
         if (blockerJobIds.size() != newBlockers.size()) {
             throw new EntityNotFoundException("validation.constraints.jobs.name");
         }
@@ -145,19 +147,22 @@ public class JobService {
     }
 
 
-    public List<InventoryUsageRecordBase> getJobRequisitionsRecordsByJobId(Long jobId) {
+    public List<InventoryUsageRecordBase> getJobRequisitionRecordsByJobId(Long jobId) {
         return InventoryUsageRecordConverter.inventoryUsageRecordsToInventoryUsageRecordDTOs(
                 this.jobRepository.findById(jobId)
                         .orElseThrow(() -> new EntityNotFoundException(JOB_EXCEPTION_MESSAGE))
                         .getInventoryUsageRecord(), TypeDTO.FETCH);
     }
 
+    @SneakyThrows
     public List<RequisitionBase> createRequisition(RequisitionBase requisitionDTO, Long jobId, Long stockId) {
         Job job = this.jobRepository.findById(jobId)
                 .orElseThrow(() -> new EntityNotFoundException(JOB_EXCEPTION_MESSAGE));
 
         Stock stock = this.stockRepository.findById(stockId)
                 .orElseThrow(() -> new EntityNotFoundException("validation.constraints.stock.name"));
+
+        ordinaryValidation(job, stock);
 
         Requisition requisition = RequisitionConverter.requisitionDTOToRequisition(requisitionDTO);
 
@@ -183,12 +188,13 @@ public class JobService {
         job.setJobRecord(jobRecordList);
     }
 
-    public List<JobBase> getAvailableJobs(List<Job> jobs) {
+    private List<JobBase> getAvailableJobs(List<Job> jobs) {
         List<JobBase> availableJobs = new ArrayList<>();
         for (Job job : jobs) {
             boolean jobAvailable;
             jobAvailable = isCompleteJob(job.getJobBlockers());
             if (jobAvailable) {
+                //Complete requisitions deleted
                 jobAvailable = job.getRequisitions().isEmpty();
             }
             if (jobAvailable) {
@@ -198,7 +204,7 @@ public class JobService {
         return availableJobs;
     }
 
-    public List<JobBase> getJobsBlocked(List<Job> jobs) {
+    private List<JobBase> getJobsBlocked(List<Job> jobs) {
         List<JobBase> jobFetchBlockedList = new ArrayList<>();
         for (Job job : jobs) {
             List<JobBase> jobBlockers = new ArrayList<>();
@@ -220,9 +226,15 @@ public class JobService {
         return jobFetchBlockedList;
     }
 
+    private void ordinaryValidation(Job job, Stock stock) throws ProductionConstraintException {
+        if (job.getDetails().toLowerCase().contains("teapot") && stock.getName().toLowerCase().contains("coffee")) {
+            throw new ProductionConstraintException("Cannot brew coffee in a teapot");
+        }
+    }
+
     private boolean isCompleteJob(List<Job> jobs) {
         for (Job jobBlocker : jobs) {
-            if (!jobBlocker.getStatus().equals(COMPLETE)) {
+            if (!jobBlocker.getStatus().equalsIgnoreCase(COMPLETE)) {
                 return false;
             }
         }

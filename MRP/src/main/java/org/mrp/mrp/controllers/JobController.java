@@ -8,7 +8,6 @@ import org.mrp.mrp.dto.job.JobBase;
 import org.mrp.mrp.dto.job.JobStatus;
 import org.mrp.mrp.dto.jobrecord.JobRecordBase;
 import org.mrp.mrp.dto.requisition.RequisitionBase;
-import org.mrp.mrp.exceptions.customexceptions.ValidationConstraintException;
 import org.mrp.mrp.services.JobService;
 import org.mrp.mrp.utils.Utils;
 import org.springframework.http.HttpStatus;
@@ -57,10 +56,11 @@ public class JobController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
     @GetMapping(value = "/{jobId}/requisitions/records")
     public ResponseEntity<List<InventoryUsageRecordBase>> getJobRequisitionsRecords(@PathVariable Long jobId) {
-        return ResponseEntity.ok(this.jobService.getJobRequisitionsRecordsByJobId(jobId));
+        return ResponseEntity.ok(this.jobService.getJobRequisitionRecordsByJobId(jobId));
     }
 
 
+    @SneakyThrows
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     @PostMapping(value = "/{jobId}/requisitions/{stockId}")
     public ResponseEntity<List<RequisitionBase>> createRequisition(
