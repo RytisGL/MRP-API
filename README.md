@@ -1357,7 +1357,7 @@ Creates a new purchase order for a specific stock item.
 
 **Validations**
 - **quatity:** `Max - 999999999`, `Min - 1`
-- **deliveryDate:** `Future date`
+- **deliveryDate:** `Future date`, `Not null`
 - **status:** `Not blank`, `Size 5-50`
 
 **Body:**
