@@ -42,8 +42,8 @@ public class LowOrderExceptionHandler extends ResponseEntityExceptionHandler {
 
     private BaseErrorResponse getBaseErrorResponse(String error, String message, HttpStatus status, Locale locale) {
         BaseErrorResponse baseErrorResponse = new BaseErrorResponse();
-        baseErrorResponse.setMessage(messageSource.getMessage(message, null, "default message", locale));
-        baseErrorResponse.setError(messageSource.getMessage(error, null, "default message", locale));
+        baseErrorResponse.setMessage(messageSource.getMessage(message, null, message, locale));
+        baseErrorResponse.setError(messageSource.getMessage(error, null, error, locale));
         baseErrorResponse.setStatus(status.value());
         return baseErrorResponse;
     }
