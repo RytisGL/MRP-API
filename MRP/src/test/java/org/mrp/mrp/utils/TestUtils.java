@@ -2,11 +2,9 @@ package org.mrp.mrp.utils;
 
 import org.mrp.mrp.dto.auth.AuthenticationRequest;
 import org.mrp.mrp.dto.auth.RegistrationRequest;
-import org.mrp.mrp.dto.job.JobBase;
 import org.mrp.mrp.dto.requisition.RequisitionBase;
 import org.mrp.mrp.entities.*;
 import org.mrp.mrp.enums.Role;
-import org.springframework.security.core.Authentication;
 
 import java.sql.Date;
 import java.time.LocalDate;

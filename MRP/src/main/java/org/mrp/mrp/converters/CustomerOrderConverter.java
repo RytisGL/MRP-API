@@ -23,7 +23,6 @@ public abstract class CustomerOrderConverter {
 
     public static CustomerOrderBase customerOrderToDTO(CustomerOrder customerOrder, TypeDTO type) {
         CustomerOrderBase dto;
-
         if (type == TypeDTO.BASE) {
             dto = new CustomerOrderBase();
         } else if (type == TypeDTO.FETCH) {
@@ -47,8 +46,7 @@ public abstract class CustomerOrderConverter {
     }
 
 
-    public static List<CustomerOrderBase> customerOrdersToCustomerOrderDTOs(List<CustomerOrder> customerOrders,
-                                                                            TypeDTO type) {
+    public static List<CustomerOrderBase> customerOrdersToCustomerOrderDTOs(List<CustomerOrder> customerOrders, TypeDTO type) {
         List<CustomerOrderBase> dtos = new ArrayList<>();
         for (CustomerOrder customerOrder : customerOrders) {
             dtos.add(customerOrderToDTO(customerOrder, type));

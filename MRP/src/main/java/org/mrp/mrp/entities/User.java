@@ -1,6 +1,8 @@
 package org.mrp.mrp.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,14 +26,23 @@ public class User implements UserDetails {
     @GeneratedValue
     private long id;
     @Column(unique=true)
+    @Size(max = 50)
+    @NotNull
     private String email;
+    @NotNull
     private String password;
+    @Size(max = 50)
+    @NotNull
     private String firstName;
+    @Size(max = 50)
+    @NotNull
     private String lastName;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @NotNull
     @CreationTimestamp
     private LocalDateTime createdAt;
+    @NotNull
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
