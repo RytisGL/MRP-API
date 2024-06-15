@@ -26,8 +26,11 @@ public abstract class TemplateConverter {
         return templateJobs;
     }
 
-    public static TemplateJob jobToTemplateJob(Job job, Map<Job, TemplateJob> templateJobRelation,
-                                               TemplateCustomerOrder templateCustomerOrder) {
+    public static TemplateJob jobToTemplateJob(
+            Job job,
+            Map<Job, TemplateJob> templateJobRelation,
+            TemplateCustomerOrder templateCustomerOrder)
+    {
         TemplateJob templateJob = new TemplateJob();
         templateJobRelation.put(job, templateJob);
         templateJob.setCustomerOrder(templateCustomerOrder);

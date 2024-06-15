@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Locale;
 import java.util.NoSuchElementException;
 
 import static org.springframework.http.HttpStatus.*;
@@ -36,7 +35,7 @@ public class HighOrderExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final MessageSource messageSource;
 
-    private static final String LOG_MESSAGE = "Exception: {}, Request: {}";
+    private static final String ENTITY_NOT_FOUND_MSG = "exception.errors.entity_not_found.message";
 
     public HighOrderExceptionHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -47,13 +46,14 @@ public class HighOrderExceptionHandler extends ResponseEntityExceptionHandler {
             @NonNull HttpMessageNotReadableException ex,
             @NonNull HttpHeaders headers,
             @NonNull HttpStatusCode status,
-            WebRequest request) {
+            @NonNull WebRequest request) {
 
-        BaseErrorResponse baseErrorResponse = getBaseErrorResponse(
+        BaseErrorResponse baseErrorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.message_not_readable.error",
                 "exception.errors.message_not_readable.message",
                 BAD_REQUEST,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(baseErrorResponse, BAD_REQUEST);
     }
@@ -64,11 +64,12 @@ public class HighOrderExceptionHandler extends ResponseEntityExceptionHandler {
             @NonNull HttpHeaders headers,
             @NonNull HttpStatusCode status,
             @NonNull WebRequest request) {
-        BaseErrorResponse baseErrorResponse = getBaseErrorResponse(
+        BaseErrorResponse baseErrorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.type_mismatch.error",
                 "exception.errors.type_mismatch.message",
                 BAD_REQUEST,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(baseErrorResponse, BAD_REQUEST);
     }
@@ -81,55 +82,62 @@ public class HighOrderExceptionHandler extends ResponseEntityExceptionHandler {
             String entityName = messageSource.getMessage(ex.getMessage(), null, "default message",
                     request.getLocale());
 
-            errorResponse = getBaseErrorResponse(
+            errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                    messageSource,
                     entityName,
                     "exception.errors.not_found.error",
-                    "exception.errors.entity_not_found.message",
+                    ENTITY_NOT_FOUND_MSG,
                     NOT_FOUND,
-                    request.getLocale());
+                    request);
 
             return new ResponseEntity<>(errorResponse, NOT_FOUND);
         }
 
-        errorResponse = getBaseErrorResponse(
+        errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.entity_not_found.error",
-                "exception.errors.entity_not_found.message",
+                ENTITY_NOT_FOUND_MSG,
                 NOT_FOUND,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(errorResponse, NOT_FOUND);
     }
 
     @ExceptionHandler(UniqueDataException.class)
     protected ResponseEntity<Object> handleEmailException(WebRequest request, UniqueDataException ex) {
-        BaseErrorResponse errorResponse = getBaseErrorResponse(
+        BaseErrorResponse errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.unique_data.error",
                 ex.getMessage(),
                 CONFLICT,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(errorResponse, CONFLICT);
     }
 
     @ExceptionHandler(ProductionConstraintException.class)
-    protected ResponseEntity<Object> handleProductionConstraintException(WebRequest request,
-                                                                 ProductionConstraintException ex) {
-        BaseErrorResponse errorResponse = getBaseErrorResponse(
+    protected ResponseEntity<Object> handleProductionConstraintException(
+            WebRequest request,
+            ProductionConstraintException ex)
+    {
+        BaseErrorResponse errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "Production constraint exception",
                 ex.getMessage(),
                 I_AM_A_TEAPOT,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(errorResponse, I_AM_A_TEAPOT);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<Object> handleNoSuchElementException(WebRequest request) {
-        BaseErrorResponse errorResponse = getBaseErrorResponse(
+        BaseErrorResponse errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.entity_not_found.error",
-                "exception.errors.entity_not_found.message",
+                ENTITY_NOT_FOUND_MSG,
                 CONFLICT,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(errorResponse, CONFLICT);
     }
@@ -140,6 +148,10 @@ public class HighOrderExceptionHandler extends ResponseEntityExceptionHandler {
             @NonNull HttpHeaders headers,
             @NonNull HttpStatusCode status,
             @NonNull WebRequest request) {
+        log.debug("Exception: {}, Request: {}", messageSource.getMessage(ex.getMessage(), null, ex.getMessage(),
+                        request.getLocale()),
+                request.getDescription(false));
+
         ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse(messageSource.getMessage(
                 "validation.constraints.validation.message", null, "default message", request.getLocale()),
                 ex.getFieldErrors());
@@ -147,99 +159,74 @@ public class HighOrderExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    protected ResponseEntity<Object> handleSQLException(DataIntegrityViolationException ex, WebRequest request) {
-        log.debug(LOG_MESSAGE, ex.getMessage(), request.getDescription(false));
-
-        BaseErrorResponse errorResponse = getBaseErrorResponse(
+    protected ResponseEntity<Object> handleSQLException(WebRequest request) {
+        BaseErrorResponse errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.data_integrity.error",
                 "exception.errors.data_integrity.message",
                 CONFLICT,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(errorResponse, CONFLICT);
     }
 
     @ExceptionHandler(ValidationConstraintException.class)
     protected ResponseEntity<Object> handleValidationConstraintException(ValidationConstraintException ex, WebRequest request) {
-        log.debug(LOG_MESSAGE, messageSource.getMessage(ex.getMessage(), null, "default message", request.getLocale()),
-                request.getDescription(false));
-
-        BaseErrorResponse errorResponse = getBaseErrorResponse(
+        BaseErrorResponse errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.validation_constraint.error",
                 ex.getMessage(),
                 CONFLICT,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(errorResponse, CONFLICT);
     }
 
     @ExceptionHandler(NumberFormatException.class)
-    protected ResponseEntity<Object> handleNumberFormatException(NumberFormatException ex, WebRequest request) {
-        log.debug(LOG_MESSAGE, ex.getMessage(), request.getDescription(false));
-
-        BaseErrorResponse errorResponse = getBaseErrorResponse(
+    protected ResponseEntity<Object> handleNumberFormatException(WebRequest request) {
+        BaseErrorResponse errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.number_format_exception.error",
                 "exception.errors.number_format_exception.message",
                 BAD_REQUEST,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(errorResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex, WebRequest request) {
-        log.debug(LOG_MESSAGE, ex.getMessage(), request.getDescription(false));
-
-        BaseErrorResponse errorResponse = getBaseErrorResponse(
+    protected ResponseEntity<Object> handleBadCredentials(WebRequest request) {
+        BaseErrorResponse errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.bad_credentials.error",
                 "exception.errors.bad_credentials.error",
                 UNAUTHORIZED,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(errorResponse, UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    protected ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
-        log.debug(LOG_MESSAGE, ex.getMessage(), request.getDescription(false));
-
-        BaseErrorResponse errorResponse = getBaseErrorResponse(
+    protected ResponseEntity<Object> handleAccessDeniedException(WebRequest request) {
+        BaseErrorResponse errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.access_denied.error",
                 "exception.errors.access_denied.error",
                 UNAUTHORIZED,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(errorResponse, UNAUTHORIZED);
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
-    protected ResponseEntity<Object> handleExpiredJwtException(ExpiredJwtException ex, WebRequest request) {
-        log.debug(LOG_MESSAGE, ex.getMessage(), request.getDescription(false));
-
-        BaseErrorResponse errorResponse = getBaseErrorResponse(
+    protected ResponseEntity<Object> handleExpiredJwtException(WebRequest request) {
+        BaseErrorResponse errorResponse = BaseErrorResponse.getBaseErrorResponse(
+                messageSource,
                 "exception.errors.jwt_expired.error",
                 "exception.errors.jwt_expired.error",
                 UNAUTHORIZED,
-                request.getLocale());
+                request);
 
         return new ResponseEntity<>(errorResponse, UNAUTHORIZED);
-    }
-
-    private BaseErrorResponse getBaseErrorResponse(String error, String message, HttpStatus status, Locale locale) {
-        BaseErrorResponse baseErrorResponse = new BaseErrorResponse();
-        baseErrorResponse.setMessage(messageSource.getMessage(message, null, message, locale));
-        baseErrorResponse.setError(messageSource.getMessage(error, null, error, locale));
-        baseErrorResponse.setStatus(status.value());
-        return baseErrorResponse;
-    }
-
-    private BaseErrorResponse getBaseErrorResponse(String entityName, String error, String message, HttpStatus status,
-                                                   Locale locale) {
-        BaseErrorResponse baseErrorResponse = new BaseErrorResponse();
-        baseErrorResponse.setMessage(messageSource.getMessage(message, null, message,
-                locale));
-        baseErrorResponse.setError(entityName + " " + messageSource.getMessage(error, null, error, locale));
-        baseErrorResponse.setStatus(status.value());
-        return baseErrorResponse;
     }
 }

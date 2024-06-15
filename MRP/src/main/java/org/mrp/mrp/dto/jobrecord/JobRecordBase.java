@@ -3,7 +3,6 @@ package org.mrp.mrp.dto.jobrecord;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.mrp.mrp.dto.user.UserFetch;
 
 @Data
 public class JobRecordBase {
