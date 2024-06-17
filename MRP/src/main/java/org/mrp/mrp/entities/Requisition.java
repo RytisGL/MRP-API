@@ -26,10 +26,8 @@ public class Requisition {
     private Job job;
     @ManyToOne ()
     private Stock stock;
-    @NotNull
     @CreationTimestamp
     private LocalDateTime createdAt;
-    @NotNull
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

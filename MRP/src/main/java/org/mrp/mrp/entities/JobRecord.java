@@ -22,7 +22,6 @@ public class JobRecord {
     private User user;
     @ManyToOne
     private Job job;
-    @NotNull
     @CreationTimestamp
     private LocalDateTime createdAt;
 }

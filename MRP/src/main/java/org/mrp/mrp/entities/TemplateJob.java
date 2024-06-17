@@ -34,10 +34,8 @@ public class TemplateJob {
     private List<TemplateRequisition> requisitions;
     @OneToMany(cascade = CascadeType.ALL)
     private List<TemplateJob> jobBlockers;
-    @NotNull
     @CreationTimestamp
     private LocalDateTime createdAt;
-    @NotNull
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

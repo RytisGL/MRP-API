@@ -25,10 +25,8 @@ public class TemplateRequisition {
     private TemplateJob job;
     @ManyToOne
     private Stock stock;
-    @NotNull
     @CreationTimestamp
     private LocalDateTime createdAt;
-    @NotNull
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

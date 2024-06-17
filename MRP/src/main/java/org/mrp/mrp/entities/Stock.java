@@ -31,10 +31,8 @@ public class Stock {
     private List<InventoryUsageRecord> inventoryUsageRecordList;
     @OneToMany(mappedBy = "stock")
     private List<PurchaseOrder> purchaseOrders;
-    @NotNull
     @CreationTimestamp
     private LocalDateTime createdAt;
-    @NotNull
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
