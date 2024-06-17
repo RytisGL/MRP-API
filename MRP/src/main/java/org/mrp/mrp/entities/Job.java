@@ -36,10 +36,8 @@ public class Job {
     private List<Requisition> requisitions;
     @OneToMany (cascade = CascadeType.ALL)
     private List<Job> jobBlockers;
-    @NotNull
     @CreationTimestamp
     private LocalDateTime createdAt;
-    @NotNull
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

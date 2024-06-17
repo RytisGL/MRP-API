@@ -24,10 +24,8 @@ public class TemplateCustomerOrder {
     private String product;
     @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL)
     private List<TemplateJob> jobs;
-    @NotNull
     @CreationTimestamp
     private LocalDateTime createdAt;
-    @NotNull
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

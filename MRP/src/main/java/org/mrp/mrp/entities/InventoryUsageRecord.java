@@ -26,10 +26,8 @@ public class InventoryUsageRecord {
     private Stock stock;
     @ManyToOne @JoinColumn(referencedColumnName="email")
     private User user;
-    @NotNull
     @CreationTimestamp
     private LocalDateTime createdAt;
-    @NotNull
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

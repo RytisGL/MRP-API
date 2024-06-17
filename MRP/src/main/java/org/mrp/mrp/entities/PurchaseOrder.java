@@ -27,10 +27,8 @@ public class PurchaseOrder {
     private String status;
     @ManyToOne
     private Stock stock;
-    @NotNull
     @CreationTimestamp
     private LocalDateTime createdAt;
-    @NotNull
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

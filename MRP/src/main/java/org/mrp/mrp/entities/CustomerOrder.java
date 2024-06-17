@@ -29,10 +29,8 @@ public class CustomerOrder {
     @OneToMany (mappedBy = "customerOrder", cascade = CascadeType.ALL)
     private List<Job> jobs;
     @CreationTimestamp
-    @NotNull
     private LocalDateTime createdAt;
     @UpdateTimestamp
-    @NotNull
     private LocalDateTime updatedAt;
 
 }
