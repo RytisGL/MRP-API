@@ -139,7 +139,7 @@ public class HighOrderExceptionHandler extends ResponseEntityExceptionHandler {
                 CONFLICT,
                 request);
 
-        return new ResponseEntity<>(errorResponse, CONFLICT);
+        return new ResponseEntity<>(errorResponse, NOT_FOUND);
     }
 
     @Override
